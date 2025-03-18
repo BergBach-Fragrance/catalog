@@ -3,734 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Perfumes Árabes</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #8A6E4F;
-            --secondary-color: #D4AF37;
-            --background-color: #F9F5F0;
-            --text-color: #333;
-            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-            padding: 2rem 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .search-container {
-            max-width: 1200px;
-            margin: 1rem auto;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .search-box {
-            flex-grow: 1;
-            max-width: 600px;
-            position: relative;
-        }
-        
-        .search-box input {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border-radius: 25px;
-            border: 1px solid #ddd;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 5px rgba(138, 110, 79, 0.5);
-        }
-        
-        .search-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-        
-        .category-filter {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 8px 15px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn:hover, .filter-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        
-        .catalog-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 2rem;
-        }
-        
-        .product-card {
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .product-image {
-            height: 250px;
-            width: 100%;
-            object-fit: cover;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .product-info {
-            padding: 15px;
-        }
-        
-        .product-brand {
-            font-size: 0.9rem;
-            color: #888;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        
-        .product-name {
-            font-size: 1.2rem;
-            margin: 5px 0;
-            font-weight: 600;
-        }
-        
-        .product-description {
-            font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        
-        .product-notes {
-            margin: 10px 0;
-        }
-        
-        .notes-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #666;
-        }
-        
-        .notes-container {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        
-        .note-tag {
-            background-color: #f0f0f0;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #555;
-        }
-        
-        .product-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 10px 0;
-        }
-        
-        .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        
-        .view-details, .add-to-cart {
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .view-details {
-            background-color: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .add-to-cart {
-            background-color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            color: white;
-            flex-grow: 1;
-            margin-left: 10px;
-        }
-        
-        .view-details:hover {
-            background-color: rgba(138, 110, 79, 0.1);
-        }
-        
-        .add-to-cart:hover {
-            background-color: #7a6145;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.2rem;
-            color: #666;
-        }
-        
-        .error-message {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.2rem;
-            color: #e74c3c;
-        }
-        
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 2rem 1rem;
-            margin-top: 3rem;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 1rem 0;
-        }
-        
-        .social-icon {
-            color: white;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .social-icon:hover {
-            transform: translateY(-3px);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 50px auto;
-            padding: 25px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 800px;
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        .product-detail {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        @media (min-width: 768px) {
-            .product-detail {
-                flex-direction: row;
-            }
-        }
-        
-        .product-detail-image {
-            flex: 1;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .product-detail-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .product-detail-info {
-            flex: 1;
-            padding: 0 15px;
-        }
-        
-        .product-detail-brand {
-            font-size: 1rem;
-            color: #888;
-            text-transform: uppercase;
-        }
-        
-        .product-detail-name {
-            font-size: 1.8rem;
-            margin: 10px 0;
-        }
-        
-        .product-detail-description {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #555;
-            margin: 15px 0;
-        }
-        
-        .product-detail-notes {
-            margin: 20px 0;
-        }
-        
-        .product-detail-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 20px 0;
-        }
-        
-        .product-detail-action {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .product-detail-buy {
-            padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-        
-        .product-detail-buy:hover {
-            background-color: #7a6145;
-        }
-        
-        @media (max-width: 768px) {
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 15px;
-            }
-            
-            .product-image {
-                height: 180px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .add-to-cart {
-                margin-left: 0;
-            }
-        }
-    </style>
+    <title>Fragancias de Oriente - Catálogo de Perfumes Árabes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
     <header>
-        <div class="logo">Luxury Arabian Perfumes</div>
-        <div class="subtitle">Descubre la magia de los aromas de Oriente</div>
+        <div class="header-content">
+            <h1>Fragancias de Oriente</h1>
+            <p class="subtitle">Perfumes Árabes Exclusivos</p>
+        </div>
     </header>
-    
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="Buscar perfumes...">
-            <span class="search-icon"><i class="fas fa-search"></i></span>
+
+    <div class="container">
+        <div class="search-filter">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Buscar perfumes...">
+            </div>
+            <div class="filter-options">
+                <select id="brand-filter">
+                    <option value="">Todas las marcas</option>
+                    <option value="Lattafa">Lattafa</option>
+                    <option value="Armaf">Armaf</option>
+                    <option value="Rasasi">Rasasi</option>
+                    <option value="Swiss Arabian">Swiss Arabian</option>
+                </select>
+                <select id="type-filter">
+                    <option value="">Todos los tipos</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Unisex">Unisex</option>
+                </select>
+                <select id="sort-filter">
+                    <option value="name">Ordenar por nombre</option>
+                    <option value="price-low">Precio: menor a mayor</option>
+                    <option value="price-high">Precio: mayor a menor</option>
+                    <option value="newest">Más recientes</option>
+                </select>
+            </div>
         </div>
-        <div class="category-filter">
-            <button class="filter-btn active" data-category="all">Todos</button>
-            <button class="filter-btn" data-category="hombre">Hombre</button>
-            <button class="filter-btn" data-category="mujer">Mujer</button>
-            <button class="filter-btn" data-category="unisex">Unisex</button>
-        </div>
-    </div>
-    
-    <div class="catalog-container">
-        <div id="product-grid" class="product-grid">
-            <div class="loading">Cargando productos...</div>
-        </div>
-    </div>
-    
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="product-detail" class="product-detail">
-                <!-- Product details will be inserted here -->
+
+        <div id="products-container" class="products-grid">
+            <div class="loading">
+                <i class="fas fa-spinner"></i> Cargando productos...
             </div>
         </div>
     </div>
-    
-    <footer>
-        <div class="logo">Luxury Arabian Perfumes</div>
-        <p>Los mejores perfumes árabes importados</p>
-        <div class="social-links">
-            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+
+    <div id="product-detail-modal" class="product-detail-modal">
+        <div class="modal-content">
+            <div class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="product-detail" id="modal-content">
+                <!-- Contenido dinámico del modal -->
+            </div>
         </div>
-        <p>&copy; 2025 Luxury Arabian Perfumes. Todos los derechos reservados.</p>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <h3>Fragancias de Oriente</h3>
+            <p>Importamos los mejores perfumes árabes para ofrecerte fragancias de calidad y duración excepcional.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p>&copy; 2025 Fragancias de Oriente. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
-    <script>
-        // Datos de ejemplo hardcoded (estos serán reemplazados por datos de Google Sheets)
-        const productos = [
-            {
-                id: "P001",
-                marca: "Arabian Oud",
-                nombre: "Midnight Oud",
-                descripcion: "Un perfume intenso y elegante con notas profundas de oud y toques de especias orientales.",
-                categoria: "hombre",
-                precio: 12500,
-                imagen: "https://via.placeholder.com/300x300?text=Midnight+Oud",
-                notas: ["Oud", "Sándalo", "Vainilla", "Pachulí", "Azafrán"]
-            },
-            {
-                id: "P002",
-                marca: "Lattafa",
-                nombre: "Raghba",
-                descripcion: "Una fragancia dulce y cálida con una presencia cautivadora de oud y ámbar.",
-                categoria: "unisex",
-                precio: 8900,
-                imagen: "https://via.placeholder.com/300x300?text=Raghba",
-                notas: ["Ámbar", "Azúcar", "Vainilla", "Oud", "Almizcle"]
-            },
-            {
-                id: "P003",
-                marca: "Armaf",
-                nombre: "Club de Nuit Intense",
-                descripcion: "Una interpretación moderna y duradera con notas cítricas y amaderadas.",
-                categoria: "hombre",
-                precio: 9500,
-                imagen: "https://via.placeholder.com/300x300?text=Club+de+Nuit",
-                notas: ["Limón", "Bergamota", "Piña", "Manzana", "Rosa", "Abedul"]
-            },
-            {
-                id: "P004",
-                marca: "Swiss Arabian",
-                nombre: "Shaghaf Oud",
-                descripcion: "Una fragancia rica y opulenta con notas florales y toques de oud.",
-                categoria: "mujer",
-                precio: 10500,
-                imagen: "https://via.placeholder.com/300x300?text=Shaghaf+Oud",
-                notas: ["Azafrán", "Rosa", "Oud", "Pachulí", "Vainilla"]
-            },
-            {
-                id: "P005",
-                marca: "Rasasi",
-                nombre: "Hawas",
-                descripcion: "Una fragancia fresca y moderna con notas acuáticas y amaderadas.",
-                categoria: "hombre",
-                precio: 11200,
-                imagen: "https://via.placeholder.com/300x300?text=Hawas",
-                notas: ["Bergamota", "Limón", "Manzana", "Cardamomo", "Canela", "Ámbar"]
-            },
-            {
-                id: "P006",
-                marca: "Afnan",
-                nombre: "Supremacy Silver",
-                descripcion: "Una fragancia elegante y sofisticada con notas frescas y amaderadas.",
-                categoria: "hombre",
-                precio: 7800,
-                imagen: "https://via.placeholder.com/300x300?text=Supremacy+Silver",
-                notas: ["Bergamota", "Manzana", "Piña", "Abedul", "Pachulí", "Ámbar"]
-            }
-        ];
-        
-        // Función para cargar productos
-        function cargarProductos(filtro = 'all') {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = '';
-            
-            const productosAMostrar = filtro === 'all' 
-                ? productos 
-                : productos.filter(p => p.categoria === filtro);
-                
-            if (productosAMostrar.length === 0) {
-                grid.innerHTML = '<div class="error-message">No se encontraron productos en esta categoría</div>';
-                return;
-            }
-            
-            productosAMostrar.forEach(producto => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.setAttribute('data-id', producto.id);
-                
-                card.innerHTML = `
-                    <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image">
-                    <div class="product-info">
-                        <div class="product-brand">${producto.marca}</div>
-                        <h3 class="product-name">${producto.nombre}</h3>
-                        <div class="product-description">${producto.descripcion}</div>
-                        <div class="product-notes">
-                            <div class="notes-title">Notas principales:</div>
-                            <div class="notes-container">
-                                ${producto.notas.slice(0, 3).map(nota => `<span class="note-tag">${nota}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="product-price">$${producto.precio.toLocaleString()}</div>
-                        <div class="action-buttons">
-                            <button class="view-details" data-id="${producto.id}">Ver detalles</button>
-                            <button class="add-to-cart" data-id="${producto.id}">Consultar</button>
-                        </div>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
-            });
-            
-            // Agregar eventos después de cargar los productos
-            document.querySelectorAll('.view-details').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    abrirModal(this.getAttribute('data-id'));
-                });
-            });
-            
-            document.querySelectorAll('.add-to-cart').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-id');
-                    const product = productos.find(p => p.id === productId);
-                    alert(`Consulta enviada por: ${product.marca} ${product.nombre}`);
-                    // Aquí podrías redirigir a WhatsApp o Facebook Messenger
-                });
-            });
-            
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    // Solo abrir modal si el clic no fue en un botón
-                    if (!e.target.closest('button')) {
-                        abrirModal(this.getAttribute('data-id'));
-                    }
-                });
-            });
-        }
-        
-        // Función para abrir el modal con detalles del producto
-        function abrirModal(productId) {
-            const producto = productos.find(p => p.id === productId);
-            const modal = document.getElementById('product-modal');
-            const detailContainer = document.getElementById('product-detail');
-            
-            detailContainer.innerHTML = `
-                <div class="product-detail-image">
-                    <img src="${producto.imagen}" alt="${producto.nombre}">
-                </div>
-                <div class="product-detail-info">
-                    <div class="product-detail-brand">${producto.marca}</div>
-                    <h2 class="product-detail-name">${producto.nombre}</h2>
-                    <p class="product-detail-description">${producto.descripcion}</p>
-                    
-                    <div class="product-detail-notes">
-                        <h4>Notas aromáticas:</h4>
-                        <div class="notes-container">
-                            ${producto.notas.map(nota => `<span class="note-tag">${nota}</span>`).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="product-detail-price">$${producto.precio.toLocaleString()}</div>
-                    
-                    <div class="product-detail-action">
-                        <button class="product-detail-buy" data-id="${producto.id}">Consultar disponibilidad</button>
-                    </div>
-                </div>
-            `;
-            
-            modal.style.display = 'block';
-            
-            // Agregar evento al botón de compra en el modal
-            document.querySelector('.product-detail-buy').addEventListener('click', function() {
-                alert(`Consulta enviada por: ${producto.marca} ${producto.nombre}`);
-                // Aquí podrías redirigir a WhatsApp o Facebook Messenger
-            });
-        }
-        
-        // Cerrar modal al hacer clic en el botón de cierre o fuera del contenido
-        document.querySelector('.close-modal').addEventListener('click', function() {
-            document.getElementById('product-modal').style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('product-modal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        
-        // Filtrar por categoría
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                const filtro = this.getAttribute('data-category');
-                cargarProductos(filtro);
-            });
-        });
-        
-        // Funcionalidad de búsqueda
-        document.getElementById('search-input').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = '';
-            
-            // Obtener la categoría activa
-            const categoriaActiva = document.querySelector('.filter-btn.active').getAttribute('data-category');
-            
-            // Filtrar por categoría y término de búsqueda
-            const productosFiltrados = categoriaActiva === 'all'
-                ? productos.filter(p => 
-                    p.nombre.toLowerCase().includes(searchTerm) || 
-                    p.marca.toLowerCase().includes(searchTerm) ||
-                    p.descripcion.toLowerCase().includes(searchTerm) ||
-                    p.notas.some(nota => nota.toLowerCase().includes(searchTerm)))
-                : productos.filter(p => 
-                    p.categoria === categoriaActiva && 
-                    (p.nombre.toLowerCase().includes(searchTerm) || 
-                    p.marca.toLowerCase().includes(searchTerm) ||
-                    p.descripcion.toLowerCase().includes(searchTerm) ||
-                    p.notas.some(nota => nota.toLowerCase().includes(searchTerm)))
-                );
-            
-            if (productosFiltrados.length === 0) {
-                grid.innerHTML = '<div class="error-message">No se encontraron productos que coincidan con tu búsqueda</div>';
-                return;
-            }
-            
-            productosFiltrados.forEach(producto => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.setAttribute('data-id', producto.id);
-                
-                card.innerHTML = `
-                    <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image">
-                    <div class="product-info">
-                        <div class="product-brand">${producto.marca}</div>
-                        <h3 class="product-name">${producto.nombre}</h3>
-                        <div class="product-description">${producto.descripcion}</div>
-                        <div class="product-notes">
-                            <div class="notes-title">Notas principales:</div>
-                            <div class="notes-container">
-                                ${producto.notas.slice(0, 3).map(nota => `<span class="note-tag">${nota}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="product-price">$${producto.precio.toLocaleString()}</div>
-                        <div class="action-buttons">
-                            <button class="view-details" data-id="${producto.id}">Ver detalles</button>
-                            <button class="add-to-cart" data-id="${producto.id}">Consultar</button>
-                        </div>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
-            });
-            
-            // Re-asignar eventos a los nuevos elementos
-            document.querySelectorAll('.view-details').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    abrirModal(this.getAttribute('data-id'));
-                });
-            });
-            
-            document.querySelectorAll('.add-to-cart').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-id');
-                    const product = productos.find(p => p.id === productId);
-                    alert(`Consulta enviada por: ${product.marca} ${product.nombre}`);
-                });
-            });
-            
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.addEventListener('click', function(e) {
-                    if (!e.target.closest('button')) {
-                        abrirModal(this.getAttribute('data-id'));
-                    }
-                });
-            });
-        });
-        
-        // Función para conectar con Google Sheets API (esto se implementará después)
-        async function cargarDatosDesdeGoogleSheets() {
-            // Aquí irá la lógica para conectar con la API de Google Sheets
-            // Por ahora usamos datos hardcoded
-            return productos;
-        }
-        
-        // Cargar productos al iniciar la página
-        window.onload = function() {
-            cargarProductos();
-        };
-    </script>
+    <!-- Cargar primero los scripts de terceros -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
+    
+    <!-- Luego los scripts propios -->
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
