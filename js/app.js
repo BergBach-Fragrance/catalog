@@ -164,4 +164,33 @@ function filterProducts() {
             filtered.sort((a, b) => a.price - b.price);
             break;
         case 'price-high':
-            filtered.sort((a, b) => b.price - a.
+            filtered.sort((a, b) => b.price - a.price);
+            break;
+        case 'newest':
+            // En este caso, asumimos que el orden original es por "más reciente"
+            // Si tuvieras un campo fecha, ordenarías por ese campo
+            break;
+    }
+
+    renderProducts(filtered);
+}
+
+// Cerrar modal si se hace clic fuera del contenido
+window.onclick = function(event) {
+    const modal = document.getElementById('product-detail-modal');
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+// Simulación de carga de datos desde API
+setTimeout(() => {
+    renderProducts(productsData);
+}, 1000);
+
+// Función para conectar con Google Sheets (a implementar)
+async function fetchDataFromGoogleSheets() {
+    // Esta función se implementará más tarde
+    // Aquí se haría la conexión con la API de Google Sheets
+    console.log("Conectando con Google Sheets...");
+}
