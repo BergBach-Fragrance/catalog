@@ -1,10 +1,9 @@
-// Estructura de datos para los productos
-const productsData = [
+const defaultProducts = [
     {
         id: "P001",
-        name: "Raghba",
         brand: "Lattafa",
-        type: "Masculino",
+        name: "Raghba",
+        gender: "Masculino",
         price: 12500,
         description: "Una fragancia intensa y duradera con notas de vainilla, madera de agar y ámbar. Ideal para ocasiones nocturnas.",
         notes: ["Vainilla", "Oud", "Ámbar", "Madera", "Almizcle"],
@@ -19,9 +18,9 @@ const productsData = [
     },
     {
         id: "P002",
-        name: "Asad",
         brand: "Armaf",
-        type: "Masculino",
+        name: "Asad",
+        gender: "Masculino",
         price: 15000,
         description: "Una fragancia poderosa y masculina con notas de cuero, madera y especias. Perfecta para el hombre decidido.",
         notes: ["Cuero", "Madera", "Cardamomo", "Pimienta", "Cedro"],
@@ -34,9 +33,9 @@ const productsData = [
     },
     {
         id: "P003",
-        name: "Qasamat Morhaf",
         brand: "Rasasi",
-        type: "Unisex",
+        name: "Qasamat Morhaf",
+        gender: "Unisex",
         price: 18500,
         description: "Una fragancia unisex sofisticada con notas florales, amaderadas y ámbar. Elegante y versátil.",
         notes: ["Jazmín", "Rosa", "Ámbar", "Sándalo", "Pachulí"],
@@ -52,9 +51,9 @@ const productsData = [
     },
     {
         id: "P004",
-        name: "Shaghaf Oud",
         brand: "Swiss Arabian",
-        type: "Femenino",
+        name: "Shaghaf Oud",
+        gender: "Femenino",
         price: 14000,
         description: "Una fragancia femenina seductora con notas de oud, rosas y vainilla. Irresistiblemente cautivadora.",
         notes: ["Oud", "Rosa", "Vainilla", "Azafrán", "Almizcle"],
@@ -67,9 +66,9 @@ const productsData = [
     },
     {
         id: "P005",
-        name: "Khamrah",
         brand: "Lattafa",
-        type: "Unisex",
+        name: "Khamrah",
+        gender: "Unisex",
         price: 16500,
         description: "Una fragancia unisex opulenta con notas de vainilla, oud y especias. Rica y duradera.",
         notes: ["Vainilla", "Oud", "Especias", "Frutos Rojos", "Tabaco"],
@@ -84,9 +83,9 @@ const productsData = [
     },
     {
         id: "P006",
-        name: "Club de Nuit Intense",
         brand: "Armaf",
-        type: "Masculino",
+        name: "Club de Nuit Intense",
+        gender: "Masculino",
         price: 13500,
         description: "Una fragancia fresca y duradera con notas cítricas, madera y ámbar. Perfecta para el día a día.",
         notes: ["Limón", "Piña", "Manzana", "Madera", "Ámbar"],
@@ -104,10 +103,27 @@ function formatPrice(price) {
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(price);
 }
 
-// Función para conectar con Google Sheets (a implementar en el futuro)
 async function fetchDataFromGoogleSheets() {
-    // Esta función se implementará más tarde
-    // Aquí se haría la conexión con la API de Google Sheets
-    console.log("Conectando con Google Sheets...");
-    return productsData; // Por ahora devuelve los datos estáticos
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbxwrTDlxjKkqGjgjxHdkq37tzrWfE5TXvylYrGil4qQCoWQ6zg-au0rrhbm20ErrBYk/exec";
+    
+    try {
+        const response = await fetch(sheetUrl);
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Si la respuesta está vacía o no tiene productos, usar los hardcodeados
+        if (!data || data.length === 0) {
+            console.warn("No se encontraron productos en la hoja de cálculo. Usando datos hardcodeados.");
+            return defaultProducts;
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error al obtener datos de Google Sheets:", error);
+        return defaultProducts;
+    }
 }

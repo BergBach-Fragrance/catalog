@@ -2,6 +2,11 @@
 let tinySlider;
 let currentProducts = [];
 
+async function loadProducts() {
+    const products = await fetchDataFromGoogleSheets();
+    renderProducts(products);
+}
+
 // Función para renderizar los productos
 function renderProducts(products) {
     const container = document.getElementById('products-container');
@@ -15,11 +20,15 @@ function renderProducts(products) {
     let html = '';
     
     products.forEach(product => {
+        const imageUrl = product.mainImage && product.mainImage.trim() !== "" 
+            ? product.mainImage 
+            : "assets/images/placeholder.jpg";
+
         html += `
         <div class="product-card" data-id="${product.id}">
             <div class="product-image">
-                <img src="${product.mainImage}" alt="${product.name}" onerror="this.src='assets/images/placeholder.jpg'">
-                <div class="product-badge">${product.type}</div>
+                <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+                <div class="product-badge">${product.gender}</div>
             </div>
             <div class="product-info">
                 <h3 class="product-name">${product.name}</h3>
@@ -28,10 +37,9 @@ function renderProducts(products) {
                     ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
                     ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
                 </div>
-                <p class="product-price">${formatPrice(product.price)}</p>
-                <div class="product-actions">
+                <div class="product-bottom">
+                    <p class="product-price">${formatPrice(product.price)}</p>
                     <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
-                    <button class="wishlist"><i class="far fa-heart"></i></button>
                 </div>
             </div>
         </div>
@@ -102,14 +110,17 @@ function openProductDetail(productId) {
 
 // Función para inicializar el carrusel con TinySlider
 function initCarousel() {
-    if (tinySlider) {
-        tinySlider.destroy();
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (!carouselContainer) return;
+
+    if (window.tinySliderInstance) {
+        window.tinySliderInstance.destroy();
     }
-    
-    tinySlider = tns({
+
+    window.tinySliderInstance = tns({
         container: '.carousel-container',
         items: 1,
-        slideBy: 'page',
+        slideBy: 1,
         autoplay: false,
         controls: true,
         nav: true,
@@ -119,9 +130,7 @@ function initCarousel() {
             '<i class="fas fa-chevron-right"></i>'
         ],
         responsive: {
-            0: {
-                edgePadding: 20
-            }
+            0: { edgePadding: 20 }
         }
     });
 }
@@ -145,7 +154,7 @@ function filterProducts() {
     const typeFilter = document.getElementById('type-filter').value;
     const sortFilter = document.getElementById('sort-filter').value;
     
-    let filtered = productsData.filter(product => {
+    let filtered = defaultProducts.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
                               product.brand.toLowerCase().includes(searchTerm) ||
                               product.notes.some(note => note.toLowerCase().includes(searchTerm));
@@ -185,12 +194,5 @@ window.onclick = function(event) {
 
 // Simulación de carga de datos desde API
 setTimeout(() => {
-    renderProducts(productsData);
+    loadProducts();
 }, 1000);
-
-// Función para conectar con Google Sheets (a implementar)
-async function fetchDataFromGoogleSheets() {
-    // Esta función se implementará más tarde
-    // Aquí se haría la conexión con la API de Google Sheets
-    console.log("Conectando con Google Sheets...");
-}
