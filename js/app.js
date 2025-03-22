@@ -77,7 +77,7 @@ function openProductDetail(productId) {
         </div>
         <div class="product-detail-info">
             <h2 class="product-detail-name">${product.name}</h2>
-            <p class="product-detail-brand">${product.brand} | ${product.type}</p>
+            <p class="product-detail-brand">${product.brand} | ${product.gender}</p>
             <p class="product-detail-price">${formatPrice(product.price)}</p>
             <p class="product-detail-description">${product.description}</p>
             
@@ -192,7 +192,4 @@ window.onclick = function(event) {
     }
 };
 
-// Simulación de carga de datos desde API
-setTimeout(() => {
-    loadProducts();
-}, 1000);
+window.onload = loadProducts;
