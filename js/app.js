@@ -2,6 +2,15 @@
 let tinySlider;
 let currentProducts = [];
 
+// Inicializar todo cuando la página se carga
+window.onload = function() {
+    // Inicializar eventos de filtrado
+    initEvents();
+    
+    // Cargar productos
+    loadProducts();
+};
+
 // Función para cargar los productos
 async function loadProducts() {
     // Mostrar la barra de progreso al inicio de la carga
@@ -87,7 +96,7 @@ async function renderProducts(products) {
         html += `
         <div class="product-card" data-id="${product.id}">
             <div class="product-image">
-                <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+                <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
                 <div class="product-badge">${product.gender}</div>
             </div>
             <div class="product-info">
@@ -129,7 +138,6 @@ function getProductImage(productId) {
         }
     });
 }
-
 
 // Función para abrir el modal de detalle de producto con carrusel
 function openProductDetail(productId) {
@@ -301,13 +309,4 @@ window.onclick = function(event) {
     if (event.target === modal) {
         closeModal();
     }
-};
-
-// Inicializar todo cuando la página se carga
-window.onload = function() {
-    // Inicializar eventos de filtrado
-    initEvents();
-    
-    // Cargar productos
-    loadProducts();
 };
