@@ -14,7 +14,7 @@ const storeConfig = {
     
     // Search and filter configuration
     search: {
-        placeholder: "Search perfumes...",
+        placeholder: "Buscar perfumes...",
         filters: {
             brands: [
                 { value: "Lattafa", text: "Lattafa" },
@@ -23,15 +23,15 @@ const storeConfig = {
                 { value: "Swiss Arabian", text: "Swiss Arabian" }
             ],
             genders: [
-                { value: "Masculine", text: "Masculine" },
-                { value: "Feminine", text: "Feminine" },
+                { value: "Masculino", text: "Masculino" },
+                { value: "Feminino", text: "Feminino" },
                 { value: "Unisex", text: "Unisex" }
             ],
             sorting: [
-                { value: "name", text: "Sort by relevance" },
-                { value: "price-low", text: "Price: Low to High" },
-                { value: "price-high", text: "Price: High to Low" },
-                { value: "newest", text: "Newest" }
+                { value: "name", text: "Ordenar por relevancia" },
+                { value: "price-low", text: "Price: Menor a Mayor" },
+                { value: "price-high", text: "Price: Mayor a Menor" },
+                { value: "newest", text: "Nuevos" }
             ]
         }
     },

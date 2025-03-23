@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set filters
     const brandFilter = document.getElementById('brand-filter');
-    brandFilter.innerHTML = '<option value="">All Brands</option>';
+    brandFilter.innerHTML = '<option value="">Todas las marcas</option>';
     storeConfig.search.filters.brands.forEach(brand => {
         const option = document.createElement('option');
         option.value = brand.value;
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     const typeFilter = document.getElementById('type-filter');
-    typeFilter.innerHTML = '<option value="">All Genders</option>';
+    typeFilter.innerHTML = '<option value="">Todos los generos</option>';
     storeConfig.search.filters.genders.forEach(gender => {
         const option = document.createElement('option');
         option.value = gender.value;

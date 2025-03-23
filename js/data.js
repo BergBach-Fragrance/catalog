@@ -39,7 +39,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 85.000,        
-        mainImage: "products/images/P001/P001-main.jpg",
+        mainImage: "products/images/P001/P001-image-0-main.jpg",
         images: [
             "products/images/P001/P001-image-1.jpg",
             "products/images/P001/P001-image-2.jpg",
@@ -58,7 +58,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 15000,
-        mainImage: "products/images/P002/P002-main.jpg",
+        mainImage: "products/images/P002/P002-image-0-main.jpg",
         images: [
             "products/images/P002/P002-image-1.jpg",
             "products/images/P002/P002-image-2.jpg"
@@ -75,7 +75,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 18500,
-        mainImage: "products/images/P003/P003-main.jpg",
+        mainImage: "products/images/P003/P003-image-0-main.jpg",
         images: [
             "products/images/P003/P003-image-1.jpg",
             "products/images/P003/P003-image-2.jpg",
@@ -95,7 +95,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 14000,
-        mainImage: "products/images/P004/P004-main.jpg",
+        mainImage: "products/images/P004/P004-image-0-main.jpg",
         images: [
             "products/images/P004/P004-image-1.jpg",
             "products/images/P004/P004-image-2.jpg"
@@ -112,7 +112,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 16500,
-        mainImage: "products/images/P005/P005-main.jpg",
+        mainImage: "products/images/P005/P005-image-0-main.jpg",
         images: [
             "products/images/P005/P005-image-1.jpg",
             "products/images/P005/P005-image-2.jpg",
@@ -131,7 +131,7 @@ const defaultProducts = [
         volume: "100mL",
         stock: 1,
         price: 13500,
-        mainImage: "products/images/P006/P006-main.jpg",
+        mainImage: "products/images/P006/P006-image-0-main.jpg",
         images: [
             "products/images/P006/P006-image-1.jpg",
             "products/images/P006/P006-image-2.jpg"
