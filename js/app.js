@@ -2,13 +2,46 @@
 let tinySlider;
 let currentProducts = [];
 
+// Función para cargar los productos
+async function loadProducts() {
+    // Mostrar la barra de progreso al inicio de la carga
+    showProgressBar();  
+    // Deshabilitar filtros mientras se carga
+    disableFilters();
+
+    try {
+        // Mostrar el mensaje de carga
+        document.querySelector('.loading').style.display = 'block';
+        
+        // Obtener los productos desde Google Sheets
+        const products = await fetchDataFromGoogleSheets();
+        
+        // Filtrar productos con stock > 0
+        const availableProducts = products.filter(product => product.stock > 0);
+        
+        // Renderizar los productos disponibles
+        renderProducts(availableProducts);
+
+        // Ocultar la barra de progreso y el mensaje de carga después de cargar los productos
+        document.querySelector('.progress-container').style.display = 'none';
+        document.querySelector('.loading').style.display = 'none';
+    } catch (error) {
+        console.error("Error al cargar los productos:", error);
+        // Si hay un error, ocultar la barra de progreso y el mensaje de carga
+        document.querySelector('.progress-container').style.display = 'none';
+        document.querySelector('.loading').style.display = 'none';
+    } finally {
+        enableFilters();
+    }
+}
+
 // Función para mostrar y actualizar la barra de progreso
 function showProgressBar() {
     const progressBarContainer = document.querySelector('.progress-container');
     progressBarContainer.style.display = 'block'; // Mostrar la barra
 
     let progress = 0;
-    const progressBar = document.getElementById('progress-bar');
+    const progressBar = document.querySelector('.progress-bar');
 
     const interval = setInterval(() => {
         if (progress < 100) {
@@ -20,45 +53,36 @@ function showProgressBar() {
     }, 100);  // Aumenta el progreso cada 100 ms
 }
 
-// Función para cargar los productos
-async function loadProducts() {
-    showProgressBar();  // Mostrar la barra de progreso al inicio de la carga
+// Función para bloquear los filtros
+function disableFilters() {
+    document.getElementById('search-input').disabled = true;
+    document.getElementById('brand-filter').disabled = true;
+    document.getElementById('type-filter').disabled = true;
+    document.getElementById('sort-filter').disabled = true;
+}
 
-    try {
-        // Obtener los productos desde Google Sheets
-        const products = await fetchDataFromGoogleSheets();
-        
-        // Filtrar productos con stock > 0
-        const availableProducts = products.filter(product => product.stock > 0);
-        
-        // Renderizar los productos disponibles
-        renderProducts(availableProducts);
-
-        // Ocultar la barra de progreso después de cargar los productos
-        document.querySelector('.progress-container').style.display = 'none';
-    } catch (error) {
-        console.error("Error al cargar los productos:", error);
-        // Si hay un error, ocultar la barra de progreso
-        document.querySelector('.progress-container').style.display = 'none';
-    }
+// Función para desbloquear los filtros
+function enableFilters() {
+    document.getElementById('search-input').disabled = false;
+    document.getElementById('brand-filter').disabled = false;
+    document.getElementById('type-filter').disabled = false;
+    document.getElementById('sort-filter').disabled = false;
 }
 
 // Función para renderizar los productos con paginación
-function renderProducts(products) {
+async function renderProducts(products) {
     const container = document.getElementById('products-container');
     currentProducts = products;
-    
+
     if (currentProducts.length === 0) {
         container.innerHTML = '<div class="no-results">No se encontraron productos disponibles.</div>';
         return;
     }
-    
+
     let html = '';
-    
-    currentProducts.forEach(product => {
-        const imageUrl = product.mainImage && product.mainImage.trim() !== "" 
-            ? product.mainImage 
-            : "assets/images/placeholder.jpg";
+
+    for (const product of currentProducts) {
+        const imageUrl = await getProductImage(product.id);
 
         html += `
         <div class="product-card" data-id="${product.id}">
@@ -80,16 +104,32 @@ function renderProducts(products) {
             </div>
         </div>
         `;
-    });
-    
+    }
+
     container.innerHTML = html;
 }
 
-// Función para ir a una página específica
-function goToPage(pageNumber) {
-    currentPage = pageNumber;
-    renderProducts(currentProducts);
+// Función para obtener la imagen principal de un producto basado en su ID
+function getProductImage(productId) {
+    const mainImagePath = `products/images/${productId}/${productId}-image-0-main.jpg`;
+
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = mainImagePath;
+        
+        img.onload = () => resolve(mainImagePath); // Si la imagen existe, devolver la ruta
+        img.onerror = () => resolve("imgs/placeholder.jpg"); // Si no, devolver placeholder
+        
+        // Agregar un manejo adicional de errores en la carga de la imagen
+        try {
+            img.src = mainImagePath;
+        } catch (e) {
+            console.error(`Error loading image for product ${productId}: ${e}`);
+            resolve("imgs/placeholder.jpg");
+        }
+    });
 }
+
 
 // Función para abrir el modal de detalle de producto con carrusel
 function openProductDetail(productId) {
@@ -105,11 +145,11 @@ function openProductDetail(productId) {
     // Primero verificamos la imagen principal
     const mainImageUrl = product.mainImage && product.mainImage.trim() !== "" 
         ? product.mainImage 
-        : "assets/images/placeholder.jpg";
+        : "imgs/placeholder.jpg";
     
     carouselItems += `
     <div class="carousel-item">
-        <img src="${mainImageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+        <img src="${mainImageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
     </div>
     `;
     
@@ -119,7 +159,7 @@ function openProductDetail(productId) {
             if (image && image.trim() !== "") {
                 carouselItems += `
                 <div class="carousel-item">
-                    <img src="${image}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+                    <img src="${image}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
                 </div>
                 `;
             }
@@ -213,12 +253,13 @@ function filterProducts() {
     const typeFilter = document.getElementById('type-filter').value;
     const sortFilter = document.getElementById('sort-filter').value;
     
-    let filtered = defaultProducts.filter(product => {
+    let filtered = currentProducts.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
                               product.brand.toLowerCase().includes(searchTerm) ||
-                              product.notes.some(note => note.toLowerCase().includes(searchTerm));
+                              (product.notes && Array.isArray(product.notes) && 
+                              product.notes.some(note => note.toLowerCase().includes(searchTerm)));
         const matchesBrand = brandFilter === '' || product.brand === brandFilter;
-        const matchesType = typeFilter === '' || product.type === typeFilter;
+        const matchesType = typeFilter === '' || product.gender === typeFilter;
         
         return matchesSearch && matchesBrand && matchesType;
     });
@@ -243,6 +284,17 @@ function filterProducts() {
     renderProducts(filtered);
 }
 
+// Inicializar los eventos de filtrado
+function initEvents() {
+    // Evento para el buscador
+    document.getElementById('search-input').addEventListener('input', filterProducts);
+    
+    // Eventos para los selectores de filtro
+    document.getElementById('brand-filter').addEventListener('change', filterProducts);
+    document.getElementById('type-filter').addEventListener('change', filterProducts);
+    document.getElementById('sort-filter').addEventListener('change', filterProducts);
+}
+
 // Cerrar modal si se hace clic fuera del contenido
 window.onclick = function(event) {
     const modal = document.getElementById('product-detail-modal');
@@ -251,4 +303,11 @@ window.onclick = function(event) {
     }
 };
 
-window.onload = loadProducts;
+// Inicializar todo cuando la página se carga
+window.onload = function() {
+    // Inicializar eventos de filtrado
+    initEvents();
+    
+    // Cargar productos
+    loadProducts();
+};
