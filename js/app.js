@@ -2,24 +2,60 @@
 let tinySlider;
 let currentProducts = [];
 
-async function loadProducts() {
-    const products = await fetchDataFromGoogleSheets();
-    renderProducts(products);
+// Función para mostrar y actualizar la barra de progreso
+function showProgressBar() {
+    const progressBarContainer = document.querySelector('.progress-container');
+    progressBarContainer.style.display = 'block'; // Mostrar la barra
+
+    let progress = 0;
+    const progressBar = document.getElementById('progress-bar');
+
+    const interval = setInterval(() => {
+        if (progress < 100) {
+            progress += 1;  // Aumentar el progreso
+            progressBar.style.width = progress + '%';  // Actualizar el ancho de la barra
+        } else {
+            clearInterval(interval);  // Detener la animación cuando llegue al 100%
+        }
+    }, 100);  // Aumenta el progreso cada 100 ms
 }
 
-// Función para renderizar los productos
+// Función para cargar los productos
+async function loadProducts() {
+    showProgressBar();  // Mostrar la barra de progreso al inicio de la carga
+
+    try {
+        // Obtener los productos desde Google Sheets
+        const products = await fetchDataFromGoogleSheets();
+        
+        // Filtrar productos con stock > 0
+        const availableProducts = products.filter(product => product.stock > 0);
+        
+        // Renderizar los productos disponibles
+        renderProducts(availableProducts);
+
+        // Ocultar la barra de progreso después de cargar los productos
+        document.querySelector('.progress-container').style.display = 'none';
+    } catch (error) {
+        console.error("Error al cargar los productos:", error);
+        // Si hay un error, ocultar la barra de progreso
+        document.querySelector('.progress-container').style.display = 'none';
+    }
+}
+
+// Función para renderizar los productos con paginación
 function renderProducts(products) {
     const container = document.getElementById('products-container');
     currentProducts = products;
     
-    if (products.length === 0) {
-        container.innerHTML = '<div class="no-results">No se encontraron productos que coincidan con tu búsqueda.</div>';
+    if (currentProducts.length === 0) {
+        container.innerHTML = '<div class="no-results">No se encontraron productos disponibles.</div>';
         return;
     }
     
     let html = '';
     
-    products.forEach(product => {
+    currentProducts.forEach(product => {
         const imageUrl = product.mainImage && product.mainImage.trim() !== "" 
             ? product.mainImage 
             : "assets/images/placeholder.jpg";
@@ -49,6 +85,12 @@ function renderProducts(products) {
     container.innerHTML = html;
 }
 
+// Función para ir a una página específica
+function goToPage(pageNumber) {
+    currentPage = pageNumber;
+    renderProducts(currentProducts);
+}
+
 // Función para abrir el modal de detalle de producto con carrusel
 function openProductDetail(productId) {
     const product = currentProducts.find(p => p.id === productId);
@@ -58,16 +100,31 @@ function openProductDetail(productId) {
     if (!product) return;
     
     // Preparar las imágenes para el carrusel
-    const allImages = [product.mainImage, ...product.images];
     let carouselItems = '';
     
-    allImages.forEach(image => {
-        carouselItems += `
-        <div class="carousel-item">
-            <img src="${image}" alt="${product.name}" onerror="this.src='assets/images/placeholder.jpg'">
-        </div>
-        `;
-    });
+    // Primero verificamos la imagen principal
+    const mainImageUrl = product.mainImage && product.mainImage.trim() !== "" 
+        ? product.mainImage 
+        : "assets/images/placeholder.jpg";
+    
+    carouselItems += `
+    <div class="carousel-item">
+        <img src="${mainImageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+    </div>
+    `;
+    
+    // Luego añadimos las imágenes adicionales, verificando cada una
+    if (product.images && Array.isArray(product.images)) {
+        product.images.forEach(image => {
+            if (image && image.trim() !== "") {
+                carouselItems += `
+                <div class="carousel-item">
+                    <img src="${image}" alt="${product.name}" onerror="this.onerror=null; this.src='assets/images/placeholder.jpg';">
+                </div>
+                `;
+            }
+        });
+    }
     
     let html = `
         <div class="product-carousel">
@@ -84,11 +141,13 @@ function openProductDetail(productId) {
             <div class="notes-section">
                 <h4 class="notes-title">Notas aromáticas:</h4>
                 <div class="notes-list">
-                    ${product.notes.map(note => `<span class="note-item">${note}</span>`).join('')}
+                    ${product.notes && Array.isArray(product.notes) ? 
+                      product.notes.map(note => `<span class="note-item">${note}</span>`).join('') : 
+                      '<span class="note-item">Sin información de notas</span>'}
                 </div>
             </div>
             
-            ${product.hasVideo ? `
+            ${product.hasVideo && product.videoUrl && product.videoUrl.trim() !== "" ? `
             <div class="product-video">
                 <h4 class="notes-title">Video del producto:</h4>
                 <video controls>

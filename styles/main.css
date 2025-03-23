@@ -250,10 +250,17 @@ h1 {
 }
 
 .loading {
-    text-align: center;
-    padding: 3rem;
-    font-size: 1.2rem;
-    color: #666;
+    position: absolute;
+    top: 50%; /* Centrado verticalmente */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #555;
+    z-index: 5; /* Asegura que el texto esté debajo de la barra */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio entre el icono y el texto */
 }
 
 .loading i {
@@ -576,4 +583,28 @@ footer {
     padding: 3rem;
     font-size: 1.2rem;
     color: #666;
+}
+
+/* Contenedor de productos */
+#products-container {
+    position: relative; /* Asegura que los elementos dentro del contenedor se posicionen respecto a él */
+    min-height: 200px; /* Ajusta según lo que necesites, para darle algo de altura */
+}
+
+/* Barra de progreso */
+.progress-container {
+    position: absolute;
+    top: 0; /* Colocamos la barra en la parte superior de este contenedor */
+    left: 0;
+    width: 100%; /* Ancho completo */
+    height: 10px; /* Espesor de la barra */
+    background-color: #f3f3f3; /* Fondo de la barra */
+    z-index: 10; /* Barra sobre los elementos de la carga */
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #34db9b; /* Color de la barra */
+    transition: width 0.1s ease-in-out;
 }
