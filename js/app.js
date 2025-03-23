@@ -123,19 +123,12 @@ function getProductImage(productId) {
     const mainImagePath = `products/images/${productId}/${productId}-image-0-main.jpg`;
 
     return new Promise((resolve) => {
+        // Crear un nuevo objeto de imagen
         const img = new Image();
         img.src = mainImagePath;
         
         img.onload = () => resolve(mainImagePath); // Si la imagen existe, devolver la ruta
         img.onerror = () => resolve("imgs/placeholder.jpg"); // Si no, devolver placeholder
-        
-        // Agregar un manejo adicional de errores en la carga de la imagen
-        try {
-            img.src = mainImagePath;
-        } catch (e) {
-            console.error(`Error loading image for product ${productId}: ${e}`);
-            resolve("imgs/placeholder.jpg");
-        }
     });
 }
 
