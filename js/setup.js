@@ -1,59 +1,96 @@
-// setup.js - Script para aplicar la configuración al HTML
+// setup.js - Script to apply configuration to HTML
 document.addEventListener('DOMContentLoaded', function() {
-    // Configurar el título de la página
-    document.getElementById('site-title').textContent = `${tiendaConfig.sitio.nombre} - ${tiendaConfig.sitio.descripcion}`;
+    // Set the page title
+    document.getElementById('site-title').textContent = `${storeConfig.site.name} - ${storeConfig.site.description}`;
     
-    // Configurar el encabezado
-    document.getElementById('header-title').textContent = tiendaConfig.sitio.nombreCorto;
-    document.getElementById('header-subtitle').textContent = tiendaConfig.sitio.subtitulo;
+    // Set the header
+    document.getElementById('header-title').textContent = storeConfig.site.shortName;
+    document.getElementById('header-subtitle').textContent = storeConfig.site.subtitle;
     
-    // Configurar el campo de búsqueda
-    document.getElementById('search-input').placeholder = tiendaConfig.busqueda.placeholder;
+    // Set the search input placeholder
+    document.getElementById('search-input').placeholder = storeConfig.search.placeholder;
     
-    // Configurar los filtros
+    // Set filters
     const brandFilter = document.getElementById('brand-filter');
-    brandFilter.innerHTML = '<option value="">Todas las marcas</option>';
-    tiendaConfig.busqueda.filtros.marcas.forEach(marca => {
+    brandFilter.innerHTML = '<option value="">All Brands</option>';
+    storeConfig.search.filters.brands.forEach(brand => {
         const option = document.createElement('option');
-        option.value = marca.valor;
-        option.textContent = marca.texto;
+        option.value = brand.value;
+        option.textContent = brand.text;
         brandFilter.appendChild(option);
     });
     
     const typeFilter = document.getElementById('type-filter');
-    typeFilter.innerHTML = '<option value="">Todos los generos</option>';
-    tiendaConfig.busqueda.filtros.generos.forEach(genero => {
+    typeFilter.innerHTML = '<option value="">All Genders</option>';
+    storeConfig.search.filters.genders.forEach(gender => {
         const option = document.createElement('option');
-        option.value = genero.valor;
-        option.textContent = genero.texto;
+        option.value = gender.value;
+        option.textContent = gender.text;
         typeFilter.appendChild(option);
     });
     
     const sortFilter = document.getElementById('sort-filter');
     sortFilter.innerHTML = '';
-    tiendaConfig.busqueda.filtros.ordenamiento.forEach(orden => {
+    storeConfig.search.filters.sorting.forEach(sort => {
         const option = document.createElement('option');
-        option.value = orden.valor;
-        option.textContent = orden.texto;
+        option.value = sort.value;
+        option.textContent = sort.text;
         sortFilter.appendChild(option);
     });
     
-    // Configurar el footer
-    document.getElementById('footer-title').textContent = tiendaConfig.footer.titulo;
-    document.getElementById('footer-description').textContent = tiendaConfig.footer.descripcion;
+    // Set the footer
+    document.getElementById('footer-title').textContent = storeConfig.footer.title;
+    document.getElementById('footer-description').textContent = storeConfig.footer.description;
     
-    // Configurar los enlaces sociales
+    // Set social media links
     const socialLinksContainer = document.getElementById('social-links-container');
     socialLinksContainer.innerHTML = '';
-    tiendaConfig.footer.socialLinks.forEach(link => {
+    storeConfig.footer.socialLinks.forEach(link => {
         const a = document.createElement('a');
         a.href = link.url;
         const i = document.createElement('i');
-        i.className = `fab fa-${link.plataforma}`;
+        i.className = `fab fa-${link.platform}`;
         a.appendChild(i);
         socialLinksContainer.appendChild(a);
     });
     
-    // Configurar el copyright
-    document.getElementById('copyright').textContent = `© ${tiendaConfig.sitio.copyright}`;
+    // Set the copyright
+    document.getElementById('copyright').textContent = `© ${storeConfig.site.copyright}`;
+    
+    // Open Graph and Twitter meta tags
+    const metaTags = document.querySelector('head');
+    const ogTitle = document.createElement('meta');
+    ogTitle.setAttribute('property', 'og:title');
+    ogTitle.setAttribute('content', storeConfig.site.title);
+    metaTags.appendChild(ogTitle);
+    
+    const ogDescription = document.createElement('meta');
+    ogDescription.setAttribute('property', 'og:description');
+    ogDescription.setAttribute('content', storeConfig.site.description);
+    metaTags.appendChild(ogDescription);
+    
+    const ogImage = document.createElement('meta');
+    ogImage.setAttribute('property', 'og:image');
+    ogImage.setAttribute('content', storeConfig.site.previewImage);
+    metaTags.appendChild(ogImage);
+    
+    const ogUrl = document.createElement('meta');
+    ogUrl.setAttribute('property', 'og:url');
+    ogUrl.setAttribute('content', storeConfig.site.url);
+    metaTags.appendChild(ogUrl);
+    
+    const twitterTitle = document.createElement('meta');
+    twitterTitle.setAttribute('name', 'twitter:title');
+    twitterTitle.setAttribute('content', storeConfig.site.title);
+    metaTags.appendChild(twitterTitle);
+    
+    const twitterDescription = document.createElement('meta');
+    twitterDescription.setAttribute('name', 'twitter:description');
+    twitterDescription.setAttribute('content', storeConfig.site.description);
+    metaTags.appendChild(twitterDescription);
+    
+    const twitterImage = document.createElement('meta');
+    twitterImage.setAttribute('name', 'twitter:image');
+    twitterImage.setAttribute('content', storeConfig.site.previewImage);
+    metaTags.appendChild(twitterImage);
 });
