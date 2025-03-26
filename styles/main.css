@@ -608,3 +608,20 @@ footer {
     background-color: #34db9b; /* Color de la barra */
     transition: width 0.1s ease-in-out;
 }
+
+.show-more-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.show-more-button:hover {
+    background-color: #0056b3;
+}

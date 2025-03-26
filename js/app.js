@@ -1,6 +1,9 @@
 // Variables globales
 let tinySlider;
-let currentProducts = [];
+let allProducts = []; // Cambio: almacenar todos los productos originales
+let displayedProducts = []; // Nuevo: almacenar productos mostrados
+let currentPage = 1;
+const PRODUCTS_PER_PAGE = 10;
 
 // Inicializar todo cuando la página se carga
 window.onload = function() {
@@ -13,32 +16,62 @@ window.onload = function() {
 
 // Función para cargar los productos
 async function loadProducts() {
+    const progressContainer = document.querySelector('.progress-container');
+    const loadingElement = document.querySelector('.loading');
+
     // Mostrar la barra de progreso al inicio de la carga
     showProgressBar();  
     // Deshabilitar filtros mientras se carga
     disableFilters();
 
     try {
-        // Mostrar el mensaje de carga
-        document.querySelector('.loading').style.display = 'block';
+        // Verificar que los elementos existen antes de manipularlos
+        if (progressContainer) {
+            progressContainer.style.display = 'block';
+        }
+        
+        if (loadingElement) {
+            loadingElement.style.display = 'block';
+        }        
+        
+        // Mostrar la barra de progreso al inicio de la carga
+        showProgressBar();
+
+        // Deshabilitar filtros mientras se carga
+        disableFilters();
         
         // Obtener los productos desde Google Sheets
         const products = await fetchDataFromGoogleSheets();
         
         // Filtrar productos con stock > 0
         const availableProducts = products.filter(product => product.stock > 0);
-        
+
+        // Reiniciar la página al cargar productos
+        currentPage = 1;
+        displayedProducts = [];        
+
         // Renderizar los productos disponibles
         renderProducts(availableProducts);
 
-        // Ocultar la barra de progreso y el mensaje de carga después de cargar los productos
-        document.querySelector('.progress-container').style.display = 'none';
-        document.querySelector('.loading').style.display = 'none';
+        // Ocultar elementos con verificación
+        if (progressContainer) {
+            progressContainer.style.display = 'none';
+        }
+        
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
     } catch (error) {
         console.error("Error al cargar los productos:", error);
-        // Si hay un error, ocultar la barra de progreso y el mensaje de carga
-        document.querySelector('.progress-container').style.display = 'none';
-        document.querySelector('.loading').style.display = 'none';
+        
+        // Ocultar elementos con verificación en caso de error
+        if (progressContainer) {
+            progressContainer.style.display = 'none';
+        }
+        
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
     } finally {
         enableFilters();
     }
@@ -78,63 +111,88 @@ function enableFilters() {
     document.getElementById('sort-filter').disabled = false;
 }
 
-// Función para renderizar los productos con paginación
+// Función para renderizar los productos con paginación acumulativa
 async function renderProducts(products) {
     const container = document.getElementById('products-container');
-    currentProducts = products;
+    
+    // Primera carga: reiniciar todo
+    if (currentPage === 1) {
+        container.innerHTML = '';
+        allProducts = products;
+        displayedProducts = [];
+    }
 
-    if (currentProducts.length === 0) {
+    if (products.length === 0) {
         container.innerHTML = '<div class="no-results">No se encontraron productos disponibles.</div>';
         return;
     }
 
+    // Calcular el rango de productos para la página actual
+    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    const endIndex = startIndex + PRODUCTS_PER_PAGE;
+    const productsToRender = products.slice(startIndex, endIndex);
+
     let html = '';
 
-    for (const product of currentProducts) {
-        const imageUrl = await getProductImage(product.id);
+    for (const product of productsToRender) {
+        // Evitar productos duplicados
+        if (!displayedProducts.some(p => p.id === product.id)) {
+            const imageUrl = await getProductImage(product.id);
 
-        html += `
-        <div class="product-card" data-id="${product.id}">
-            <div class="product-image">
-                <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
-                <div class="product-badge">${product.gender}</div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${product.name}</h3>
-                <p class="product-brand">${product.brand}</p>
-                <div class="product-notes">
-                    ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
-                    ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
+            html += `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">
+                    <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
+                    <div class="product-badge">${product.gender}</div>
                 </div>
-                <div class="product-bottom">
-                    <p class="product-price">${formatPrice(product.price)}</p>
-                    <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-brand">${product.brand}</p>
+                    <div class="product-notes">
+                        ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
+                        ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
+                    </div>
+                    <div class="product-bottom">
+                        <p class="product-price">${formatPrice(product.price)}</p>
+                        <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        `;
+            `;
+            
+            // Agregar el producto a los productos mostrados
+            displayedProducts.push(product);
+        }
     }
 
-    container.innerHTML = html;
+    // Añadir los productos renderizados al contenedor
+    container.innerHTML += html;
+
+    // Mostrar/ocultar botón de "Mostrar más"
+    updateShowMoreButton(products);
 }
 
-// Función para obtener la imagen principal de un producto basado en su ID
 function getProductImage(productId) {
-    const mainImagePath = `products/images/${productId}/${productId}-image-0-main.jpg`;
-
     return new Promise((resolve) => {
-        // Crear un nuevo objeto de imagen
+        const mainImagePath = `./products/images/${productId}/${productId}-image-0-main.jpg`;
+        const placeholderPath = './imgs/placeholder.jpg';
+
         const img = new Image();
+
+        // Manejar la carga exitosa
+        img.onload = () => resolve(mainImagePath);
+
+        // Manejar el error sin que se registre en la consola
+        img.onerror = () => resolve(placeholderPath);
+
+        // Asignar la ruta de la imagen
         img.src = mainImagePath;
-        
-        img.onload = () => resolve(mainImagePath); // Si la imagen existe, devolver la ruta
-        img.onerror = () => resolve("imgs/placeholder.jpg"); // Si no, devolver placeholder
     });
 }
 
 // Función para abrir el modal de detalle de producto con carrusel
 function openProductDetail(productId) {
-    const product = currentProducts.find(p => p.id === productId);
+    const product = displayedProducts.find(p => p.id === productId);
     const modal = document.getElementById('product-detail-modal');
     const modalContent = document.getElementById('modal-content');
     
@@ -208,6 +266,34 @@ function openProductDetail(productId) {
     initCarousel();
 }
 
+// Función para actualizar el botón de "Mostrar más"
+function updateShowMoreButton(products) {
+    const container = document.getElementById('products-container');
+    
+    // Remover cualquier botón existente
+    const existingShowMoreBtn = document.getElementById('show-more-btn');
+    if (existingShowMoreBtn) {
+        existingShowMoreBtn.remove();
+    }
+
+    // Si hay más productos para mostrar, añadir el botón
+    if (displayedProducts.length < products.length) {
+        const showMoreBtn = document.createElement('button');
+        showMoreBtn.id = 'show-more-btn';
+        showMoreBtn.className = 'show-more-button';
+        showMoreBtn.textContent = 'Mostrar más';
+        showMoreBtn.onclick = loadMoreProducts;
+        
+        container.insertAdjacentElement('afterend', showMoreBtn);
+    }
+}
+
+// Función para cargar más productos
+function loadMoreProducts() {
+    currentPage++;
+    renderProducts(allProducts);
+}
+
 // Función para inicializar el carrusel con TinySlider
 function initCarousel() {
     const carouselContainer = document.querySelector('.carousel-container');
@@ -247,24 +333,23 @@ function closeModal() {
     }
 }
 
-// Función para filtrar productos
 function filterProducts() {
-    const searchTerm = document.getElementById('search-input').value.toLowerCase();
-    const brandFilter = document.getElementById('brand-filter').value;
-    const typeFilter = document.getElementById('type-filter').value;
-    const sortFilter = document.getElementById('sort-filter').value;
-    
-    let filtered = currentProducts.filter(product => {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+    const brandFilter = document.getElementById('brand-filter').value.trim();
+    const typeFilter = document.getElementById('type-filter').value.trim();
+    const sortFilter = document.getElementById('sort-filter').value.trim();
+
+    let filtered = allProducts.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
-                              product.brand.toLowerCase().includes(searchTerm) ||
-                              (product.notes && Array.isArray(product.notes) && 
-                              product.notes.some(note => note.toLowerCase().includes(searchTerm)));
-        const matchesBrand = brandFilter === '' || product.brand === brandFilter;
-        const matchesType = typeFilter === '' || product.gender === typeFilter;
-        
-        return matchesSearch && matchesBrand && matchesType;
+                              product.brand.toLowerCase().includes(searchTerm);
+
+        const matchesBrand = brandFilter === '' || (product.brand && product.brand.trim() === brandFilter);
+        //const matchesType = typeFilter === '' || (product.gender && product.gender.toLowerCase().trim() === typeFilter.toLowerCase().trim());
+
+        return matchesSearch && matchesBrand
+        // && matchesType;
     });
-    
+
     // Ordenar productos
     switch(sortFilter) {
         case 'name':
@@ -277,11 +362,13 @@ function filterProducts() {
             filtered.sort((a, b) => b.price - a.price);
             break;
         case 'newest':
-            // En este caso, asumimos que el orden original es por "más reciente"
-            // Si tuvieras un campo fecha, ordenarías por ese campo
+            // Si tuvieras un campo de fecha, podrías ordenar por ese campo aquí
             break;
     }
 
+    // Reiniciar la página al filtrar
+    currentPage = 1;
+    displayedProducts = [];
     renderProducts(filtered);
 }
 
