@@ -18,12 +18,7 @@ window.onload = function() {
 async function loadProducts() {
     const progressContainer = document.querySelector('.progress-container');
     const loadingElement = document.querySelector('.loading');
-
-    // Mostrar la barra de progreso al inicio de la carga
-    showProgressBar();  
-    // Deshabilitar filtros mientras se carga
-    disableFilters();
-
+    
     try {
         // Verificar que los elementos existen antes de manipularlos
         if (progressContainer) {
