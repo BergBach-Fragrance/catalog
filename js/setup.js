@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         brandFilter.appendChild(option);
     });
     
-    const typeFilter = document.getElementById('type-filter');
+    const typeFilter = document.getElementById('gender-filter');
     typeFilter.innerHTML = '<option value="">Todos los generos</option>';
     storeConfig.search.filters.genders.forEach(gender => {
         const option = document.createElement('option');

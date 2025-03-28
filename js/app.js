@@ -94,7 +94,7 @@ function showProgressBar() {
 function disableFilters() {
     document.getElementById('search-input').disabled = true;
     document.getElementById('brand-filter').disabled = true;
-    document.getElementById('type-filter').disabled = true;
+    document.getElementById('gender-filter').disabled = true;
     document.getElementById('sort-filter').disabled = true;
 }
 
@@ -102,7 +102,7 @@ function disableFilters() {
 function enableFilters() {
     document.getElementById('search-input').disabled = false;
     document.getElementById('brand-filter').disabled = false;
-    document.getElementById('type-filter').disabled = false;
+    document.getElementById('gender-filter').disabled = false;
     document.getElementById('sort-filter').disabled = false;
 }
 
@@ -193,72 +193,118 @@ function openProductDetail(productId) {
     
     if (!product) return;
     
-    // Preparar las imágenes para el carrusel
-    let carouselItems = '';
+    // Function to generate image URLs for the carousel
+    function generateCarouselImages(productId, maxImages = 5) {
+        const images = [];
+        
+        // Check main image first (using your existing function)
+        const mainImageCheck = getProductImage(productId)
+            .then(mainImagePath => {
+                // If main image is found, add it to the start of the array
+                if (mainImagePath !== './imgs/placeholder.jpg') {
+                    images.push(mainImagePath);
+                }
+                
+                // Then try to load additional images
+                for (let i = 1; i < maxImages; i++) {
+                    const imagePath = `./products/images/${productId}/${productId}-image-${i}.jpg`;
+                    
+                    // Create a promise to check if each image exists
+                    const imagePromise = new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = () => resolve(imagePath);
+                        img.onerror = () => resolve(null);
+                        img.src = imagePath;
+                    });
+                    
+                    images.push(imagePromise);
+                }
+                
+                // Wait for all image promises to resolve
+                return Promise.all(images);
+            });
+        
+        return mainImageCheck;
+    }
     
-    // Primero verificamos la imagen principal
-    const mainImageUrl = product.mainImage && product.mainImage.trim() !== "" 
-        ? product.mainImage 
-        : "imgs/placeholder.jpg";
-    
-    carouselItems += `
-    <div class="carousel-item">
-        <img src="${mainImageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
-    </div>
-    `;
-    
-    // Luego añadimos las imágenes adicionales, verificando cada una
-    if (product.images && Array.isArray(product.images)) {
-        product.images.forEach(image => {
-            if (image && image.trim() !== "") {
-                carouselItems += `
+    // Generate carousel images
+    generateCarouselImages(productId)
+        .then(resolvedImages => {
+            // Filter out null images
+            const validImages = resolvedImages.filter(img => img !== null);
+            
+            // Prepare carousel HTML
+            let carouselItems = validImages.map(imageUrl => `
                 <div class="carousel-item">
-                    <img src="${image}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
+                    <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
+                </div>
+            `).join('');
+            
+            // Fallback to placeholder if no images found
+            if (validImages.length === 0) {
+                carouselItems = `
+                <div class="carousel-item">
+                    <img src="imgs/placeholder.jpg" alt="${product.name}">
                 </div>
                 `;
             }
-        });
-    }
-    
-    let html = `
-        <div class="product-carousel">
-            <div class="carousel-container">
-                ${carouselItems}
-            </div>
-        </div>
-        <div class="product-detail-info">
-            <h2 class="product-detail-name">${product.name}</h2>
-            <p class="product-detail-brand">${product.brand} | ${product.gender}</p>
-            <p class="product-detail-price">${formatPrice(product.price)}</p>
-            <p class="product-detail-description">${product.description}</p>
             
-            <div class="notes-section">
-                <h4 class="notes-title">Notas aromáticas:</h4>
-                <div class="notes-list">
-                    ${product.notes && Array.isArray(product.notes) ? 
-                      product.notes.map(note => `<span class="note-item">${note}</span>`).join('') : 
-                      '<span class="note-item">Sin información de notas</span>'}
+            // Rest of the modal content remains the same
+            let html = `
+                <div class="product-carousel">
+                    <div class="carousel-container">
+                        ${carouselItems}
+                    </div>
                 </div>
-            </div>
+                <div class="product-detail-info">
+                    <h2 class="product-detail-name">${product.name}</h2>
+                    <p class="product-detail-brand">${product.brand} | ${product.gender}</p>
+                    <p class="product-detail-price">${formatPrice(product.price)}</p>
+                    <p class="product-detail-description">${product.description}</p>
+                    
+                    <div class="notes-section">
+                        <h4 class="notes-title">Notas aromáticas:</h4>
+                        <div class="notes-list">
+                            ${product.notes && Array.isArray(product.notes) ? 
+                              product.notes.map(note => `<span class="note-item">${note}</span>`).join('') : 
+                              '<span class="note-item">Sin información de notas</span>'}
+                        </div>
+                    </div>
+                    
+                    ${product.hasVideo && product.videoUrl && product.videoUrl.trim() !== "" ? `
+                    <div class="product-video">
+                        <h4 class="notes-title">Video del producto:</h4>
+                        <video controls>
+                            <source src="${product.videoUrl}" type="video/mp4">
+                            Tu navegador no soporta la reproducción de videos.
+                        </video>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
             
-            ${product.hasVideo && product.videoUrl && product.videoUrl.trim() !== "" ? `
-            <div class="product-video">
-                <h4 class="notes-title">Video del producto:</h4>
-                <video controls>
-                    <source src="${product.videoUrl}" type="video/mp4">
-                    Tu navegador no soporta la reproducción de videos.
-                </video>
-            </div>
-            ` : ''}
-        </div>
-    `;
-    
-    modalContent.innerHTML = html;
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    
-    // Inicializar el carrusel
-    initCarousel();
+            modalContent.innerHTML = html;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Inicializar el carrusel
+            initCarousel();
+        })
+        .catch(error => {
+            console.error('Error loading product images:', error);
+            // Fallback to placeholder if any error occurs
+            modalContent.innerHTML = `
+                <div class="product-carousel">
+                    <div class="carousel-container">
+                        <div class="carousel-item">
+                            <img src="imgs/placeholder.jpg" alt="Imagen no disponible">
+                        </div>
+                    </div>
+                </div>
+            `;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
 }
 
 // Función para actualizar el botón de "Mostrar más"
@@ -331,18 +377,25 @@ function closeModal() {
 function filterProducts() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
     const brandFilter = document.getElementById('brand-filter').value.trim();
-    const typeFilter = document.getElementById('type-filter').value.trim();
+    const genderFilter = document.getElementById('gender-filter').value.trim();
     const sortFilter = document.getElementById('sort-filter').value.trim();
+
+    console.log(genderFilter);
+
+    if (genderFilter === "Masculino") {
+        genderFilter = "Hombre";
+    } else if (genderFilter === "Femenino") {
+        genderFilter = "Mujer";
+    }
 
     let filtered = allProducts.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
                               product.brand.toLowerCase().includes(searchTerm);
 
         const matchesBrand = brandFilter === '' || (product.brand && product.brand.trim() === brandFilter);
-        //const matchesType = typeFilter === '' || (product.gender && product.gender.toLowerCase().trim() === typeFilter.toLowerCase().trim());
+        const matchesGender = genderFilter === '' || (product.gender.toLowerCase().trim() === genderFilter.toLowerCase().trim());
 
-        return matchesSearch && matchesBrand
-        // && matchesType;
+        return matchesSearch && matchesBrand && matchesGender;
     });
 
     // Ordenar productos
@@ -374,7 +427,7 @@ function initEvents() {
     
     // Eventos para los selectores de filtro
     document.getElementById('brand-filter').addEventListener('change', filterProducts);
-    document.getElementById('type-filter').addEventListener('change', filterProducts);
+    document.getElementById('gender-filter').addEventListener('change', filterProducts);
     document.getElementById('sort-filter').addEventListener('change', filterProducts);
 }
 
