@@ -138,7 +138,7 @@ async function renderProducts(products) {
     for (const product of productsToRender) {
         // Evitar productos duplicados
         if (!displayedProducts.some(p => p.id === product.id)) {
-            const imageUrl = await getProductImage(product.id);
+            const imageUrl = await getMainProductImage(product.id);
 
             const formattedPrice = HelperService.formatPrice(product.price);
 
@@ -175,7 +175,7 @@ async function renderProducts(products) {
     updateShowMoreButton(products);
 }
 
-function getProductImage(productId) {
+function getMainProductImage(productId) {
     return new Promise((resolve) => {
         const mainImagePath = `./products/images/${productId}/${productId}-image-0-main.jpg`;
         const placeholderPath = './imgs/placeholder.jpg';
@@ -206,7 +206,7 @@ function openProductDetail(productId) {
         const images = [];
         
         // Check main image first (using your existing function)
-        const mainImageCheck = getProductImage(productId)
+        const mainImageCheck = getMainProductImage(productId)
             .then(mainImagePath => {
                 // If main image is found, add it to the start of the array
                 if (mainImagePath !== './imgs/placeholder.jpg') {
@@ -267,7 +267,7 @@ function openProductDetail(productId) {
                 <div class="product-detail-info">
                     <h2 class="product-detail-name">${product.name}</h2>
                     <p class="product-detail-brand">${product.brand} | ${product.gender}</p>
-                    <p class="product-detail-price">${formatPrice(product.price)}</p>
+                    <p class="product-detail-price">${HelperService.formatPrice(product.price)}</p>
                     <p class="product-detail-description">${product.description}</p>
                     
                     <div class="notes-section">
@@ -314,6 +314,8 @@ function openProductDetail(productId) {
             document.body.style.overflow = 'hidden';
         });
 }
+
+window.openProductDetail = openProductDetail;
 
 // Función para actualizar el botón de "Mostrar más"
 function updateShowMoreButton(products) {
@@ -381,6 +383,8 @@ function closeModal() {
         tinySlider = null;
     }
 }
+
+window.closeModal = closeModal();
 
 async function filterProducts() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
