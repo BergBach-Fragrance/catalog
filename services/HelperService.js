@@ -16,8 +16,8 @@ export class HelperService {
             // Normalizar género
             const normalizedGender = filters.gender.toLowerCase();
             sanitizedFilters.gender = 
-                normalizedGender === 'masculino' ? 'Hombre' :
-                normalizedGender === 'femenino' ? 'Mujer' :
+                normalizedGender === 'male' ? 'Hombre' :
+                normalizedGender === 'female' ? 'Mujer' :
                 filters.gender;
         }
 

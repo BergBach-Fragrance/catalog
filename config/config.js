@@ -16,14 +16,21 @@ export const storeConfig = {
         placeholder: "Buscar perfumes...",
         filters: {
             brands: [
-                { value: "Lattafa", text: "Lattafa" },
+                { value: "Afnan", text: "Afnan" },
+                { value: "Al Haramain", text: "Al Haramain" },
                 { value: "Armaf", text: "Armaf" },
+                { value: "Bharara", text: "Bharara" },
+                { value: "Lattafa", text: "Lattafa" },
+                { value: "Maison Alhambra", text: "Maison Alhambra" },
                 { value: "Rasasi", text: "Rasasi" },
-                { value: "Swiss Arabian", text: "Swiss Arabian" }
+                { value: "Giorgio Armani", text: "Giorgio Armani" },
+                { value: "Jean Paul Gaultier", text: "Jean Paul Gaultier" },
+                { value: "Valentino", text: "Valentino" },
+                { value: "Xerjoff", text: "Xerjoff" }
             ],
             genders: [
-                { value: "Masculino", text: "Masculino" },
-                { value: "Femenino", text: "Femenino" },
+                { value: "Male", text: "Masculino" },
+                { value: "Female", text: "Femenino" },
                 { value: "Unisex", text: "Unisex" }
             ],
             sorting: [
