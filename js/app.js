@@ -384,7 +384,7 @@ function closeModal() {
     }
 }
 
-window.closeModal = closeModal();
+window.closeModal = closeModal;
 
 async function filterProducts() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
