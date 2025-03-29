@@ -34,7 +34,7 @@ export const storeConfig = {
                 { value: "Unisex", text: "Unisex" }
             ],
             sorting: [
-                { value: "name", text: "Ordenar por relevancia" },
+                { value: "relevance", text: "Ordenar por relevancia" },
                 { value: "price-low", text: "Precio: Menor a Mayor" },
                 { value: "price-high", text: "Precio: Mayor a Menor" },
                 { value: "newest", text: "Nuevos" }

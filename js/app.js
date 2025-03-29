@@ -1,4 +1,5 @@
 import { apiConfig } from '../config/config.js';
+import { HelperService } from '../services/HelperService.js';
 import { ProductService } from '../services/ProductService.js';
 
 const productService = new ProductService(apiConfig);
@@ -139,6 +140,8 @@ async function renderProducts(products) {
         if (!displayedProducts.some(p => p.id === product.id)) {
             const imageUrl = await getProductImage(product.id);
 
+            const formattedPrice = HelperService.formatPrice(product.price);
+
             html += `
             <div class="product-card" data-id="${product.id}">
                 <div class="product-image">
@@ -153,7 +156,7 @@ async function renderProducts(products) {
                         ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
                     </div>
                     <div class="product-bottom">
-                        <p class="product-price">${product.price}</p>
+                        <p class="product-price">${formattedPrice}</p>
                         <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
                     </div>
                 </div>

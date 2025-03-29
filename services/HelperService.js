@@ -21,6 +21,8 @@ export class HelperService {
                 filters.gender;
         }
 
+        sanitizedFilters.sortBy = filters.sortBy ? filters.sortBy.trim() : "relevance";
+
         return sanitizedFilters;
     }
 

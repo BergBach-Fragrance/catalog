@@ -25,13 +25,15 @@ export class ProductService {
 
             this.cachedProducts = data.map(product => ({
                 ...product,
-                price: HelperService.formatPrice(parseFloat(product.price)),
+                price: parseFloat(product.price),
                 stock: parseInt(product.stock)
             }));
 
             // Guardar en el caché global
             window.cachedProducts = this.cachedProducts;
 
+            // El orden por relevancia ordena por ID de producto secuencial. La primera carga lo hace de esta manera.
+            //return this.cachedProducts.sort(sortProducts('relevance'));
             return this.cachedProducts;
         } catch (error) {
             console.error('Error al obtener productos desde Google Sheets:', error);
@@ -94,9 +96,11 @@ export class ProductService {
                     return b.price - a.price;
                 case 'newest':
                     return new Date(b.date) - new Date(a.date);
+                case 'relevance':
+                    return a.id.localeCompare(b.id);
                 default:
-                    return a.name.localeCompare(b.name);
+                    return a.id.localeCompare(b.id);
             }
         };
-    }
+    }    
 }
