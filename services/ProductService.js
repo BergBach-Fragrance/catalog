@@ -5,6 +5,11 @@ export class ProductService {
         this.apiConfig = apiConfig;
         this.cachedProducts = null;
         this.defaultProductsPath = './products/default/DefaultProducts.json';
+
+        // Si ya hay productos en el cache global, usarlos
+        if (window.cachedProducts) {
+            this.cachedProducts = window.cachedProducts;
+        }
     }
 
     // Método para obtener productos desde Google Sheets o por defecto
@@ -23,6 +28,9 @@ export class ProductService {
                 price: HelperService.formatPrice(parseFloat(product.price)),
                 stock: parseInt(product.stock)
             }));
+
+            // Guardar en el caché global
+            window.cachedProducts = this.cachedProducts;
 
             return this.cachedProducts;
         } catch (error) {
@@ -43,6 +51,9 @@ export class ProductService {
                     price: HelperService.formatPrice(product.price)
                 }));
 
+                // Guardar en el caché global
+                window.cachedProducts = this.cachedProducts;
+
                 return this.cachedProducts;
             } catch (fetchError) {
                 console.error('Error al cargar productos por defecto:', fetchError);
@@ -51,22 +62,21 @@ export class ProductService {
         }
     }
 
-    // Método para obtener productos filtrados
     async getFilteredProducts(filters) {
         const products = await this.fetchProducts();
         const sanitizedFilters = HelperService.SanitizeFilters(filters);
 
         return products.filter(product => {
-            const matchesSearch = sanitizedFilters.searchTerm ?
+            const matchesSearch = sanitizedFilters.searchTerm ? 
                 product.name.toLowerCase().includes(sanitizedFilters.searchTerm) ||
                 product.brand.toLowerCase().includes(sanitizedFilters.searchTerm)
                 : true;
 
-            const matchesBrand = sanitizedFilters.brand ?
+            const matchesBrand = sanitizedFilters.brand ? 
                 product.brand === sanitizedFilters.brand
                 : true;
 
-            const matchesGender = sanitizedFilters.gender ?
+            const matchesGender = sanitizedFilters.gender ? 
                 product.gender.toLowerCase() === sanitizedFilters.gender.toLowerCase()
                 : true;
 

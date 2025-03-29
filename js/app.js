@@ -379,50 +379,35 @@ function closeModal() {
     }
 }
 
-function filterProducts() {
+async function filterProducts() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
     const brandFilter = document.getElementById('brand-filter').value.trim();
     const genderFilter = document.getElementById('gender-filter').value.trim();
     const sortFilter = document.getElementById('sort-filter').value.trim();
 
-    console.log(genderFilter);
+    // Crear un objeto con los filtros actuales
+    const filters = {
+        searchTerm: searchTerm,
+        brand: brandFilter,
+        gender: genderFilter,
+        sortBy: sortFilter
+    };
 
-    if (genderFilter === "Masculino") {
-        genderFilter = "Hombre";
-    } else if (genderFilter === "Femenino") {
-        genderFilter = "Mujer";
+    try {
+        const filteredProducts = await productService.getFilteredProducts(filters);
+
+        if (!Array.isArray(filteredProducts)) {
+            console.error('filteredProducts no es un array:', filteredProducts);
+            return;
+        }
+
+        // Reiniciar la página al filtrar
+        currentPage = 1;
+        displayedProducts = [];
+        renderProducts(filteredProducts);
+    } catch (error) {
+        console.error('Error al filtrar los productos:', error);
     }
-
-    let filtered = allProducts.filter(product => {
-        const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
-                              product.brand.toLowerCase().includes(searchTerm);
-
-        const matchesBrand = brandFilter === '' || (product.brand && product.brand.trim() === brandFilter);
-        const matchesGender = genderFilter === '' || (product.gender.toLowerCase().trim() === genderFilter.toLowerCase().trim());
-
-        return matchesSearch && matchesBrand && matchesGender;
-    });
-
-    // Ordenar productos
-    switch(sortFilter) {
-        case 'name':
-            filtered.sort((a, b) => a.name.localeCompare(b.name));
-            break;
-        case 'price-low':
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-        case 'price-high':
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-        case 'newest':
-            // Si tuvieras un campo de fecha, podrías ordenar por ese campo aquí
-            break;
-    }
-
-    // Reiniciar la página al filtrar
-    currentPage = 1;
-    displayedProducts = [];
-    renderProducts(filtered);
 }
 
 // Inicializar los eventos de filtrado
