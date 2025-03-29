@@ -1,3 +1,5 @@
+import { storeConfig } from '../config/config.js';
+
 // setup.js - Script to apply configuration to HTML
 document.addEventListener('DOMContentLoaded', function() {
     // Set the page title

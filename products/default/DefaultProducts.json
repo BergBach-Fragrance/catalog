@@ -1,0 +1,57 @@
+[
+    {
+        "id": "P001",
+        "brand": "Lattafa",
+        "name": "Raghba",
+        "description": "Una fragancia intensa y duradera con notas de vainilla, madera de agar y ámbar. Ideal para ocasiones nocturnas.",
+        "notes": ["Vainilla", "Oud", "Ámbar", "Madera", "Almizcle"],
+        "gender": "Masculino",
+        "volume": "100mL",
+        "stock": 1,
+        "price": 85000
+    },
+    {
+        "id": "P002",
+        "brand": "Armaf",
+        "name": "Asad",
+        "description": "Una fragancia poderosa y masculina con notas de cuero, madera y especias. Perfecta para el hombre decidido.",
+        "notes": ["Cuero", "Madera", "Cardamomo", "Pimienta", "Cedro"],
+        "gender": "Masculino",
+        "volume": "100mL",
+        "stock": 1,
+        "price": 15000
+    },
+    {
+        "id": "P003",
+        "brand": "Rasasi",
+        "name": "Qasamat Morhaf",
+        "description": "Una fragancia unisex sofisticada con notas florales, amaderadas y ámbar. Elegante y versátil.",
+        "notes": ["Jazmín", "Rosa", "Ámbar", "Sándalo", "Pachulí"],
+        "gender": "Unisex",
+        "volume": "100mL",
+        "stock": 1,
+        "price": 18500
+    },
+    {
+        "id": "P004",
+        "brand": "Swiss Arabian",
+        "name": "Shaghaf Oud",
+        "description": "Una fragancia femenina seductora con notas de oud, rosas y vainilla. Irresistiblemente cautivadora.",
+        "notes": ["Oud", "Rosa", "Vainilla", "Azafrán", "Almizcle"],
+        "gender": "Femenino",
+        "volume": "100mL",
+        "stock": 1,
+        "price": 14000
+    },
+    {
+        "id": "P005",
+        "brand": "Lattafa",
+        "name": "Khamrah",
+        "description": "Una fragancia unisex opulenta con notas de vainilla, oud y especias. Rica y duradera.",
+        "notes": ["Vainilla", "Oud", "Especias", "Frutos Rojos", "Tabaco"],
+        "gender": "Unisex",
+        "volume": "100mL",
+        "stock": 1,
+        "price": 16500
+    }
+]

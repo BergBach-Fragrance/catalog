@@ -1,3 +1,8 @@
+import { apiConfig } from '../config/config.js';
+import { ProductService } from '../services/ProductService.js';
+
+const productService = new ProductService(apiConfig);
+
 // Variables globales
 let tinySlider;
 let allProducts = []; // Cambio: almacenar todos los productos originales
@@ -36,7 +41,7 @@ async function loadProducts() {
         disableFilters();
         
         // Obtener los productos desde Google Sheets
-        const products = await fetchDataFromGoogleSheets();
+        const products = await productService.fetchProducts();
         
         // Filtrar productos con stock > 0
         const availableProducts = products.filter(product => product.stock > 0);
@@ -148,7 +153,7 @@ async function renderProducts(products) {
                         ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
                     </div>
                     <div class="product-bottom">
-                        <p class="product-price">${formatPrice(product.price)}</p>
+                        <p class="product-price">${product.price}</p>
                         <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
                     </div>
                 </div>
