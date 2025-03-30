@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Botella de perfume - forma característica pero con colores neutros -->
+  <path d="M23 36c0-6 4-8 4-14V14h10v8c0 6 4 8 4 14v12c0 2.2-1.8 4-4 4H27c-2.2 0-4-1.8-4-4V36z" fill="#2a2a2a"/>
+  
+  <!-- Tapa de la botella - más pronunciada -->
+  <path d="M27 10h10v4H27z" fill="#1a1a1a"/>
+  
+  <!-- Cuello de la botella -->
+  <path d="M27 14h10v4H27z" fill="#3a3a3a"/>
+  
+  <!-- Rociador/atomizador -->
+  <circle cx="32" cy="20" r="2" fill="#e0dcd3"/>
+  
+  <!-- Detalles/brillos para dar dimensión -->
+  <path d="M28 28c0 0 1.5-4 4-4s4 4 4 4v16c0 1.1-0.9 2-2 2h-4c-1.1 0-2-0.9-2-2V28z" fill="#3a3a3a" opacity="0.7"/>
+</svg>
