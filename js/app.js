@@ -9,7 +9,7 @@ let tinySlider;
 let allProducts = []; // Cambio: almacenar todos los productos originales
 let displayedProducts = []; // Nuevo: almacenar productos mostrados
 let currentPage = 1;
-const PRODUCTS_PER_PAGE = 10;
+const PRODUCTS_PER_PAGE = 50;
 
 // Inicializar todo cuando la página se carga
 window.onload = function() {
