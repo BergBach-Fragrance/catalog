@@ -14,55 +14,37 @@ export class ProductService {
 
     // Método para obtener productos desde Google Sheets o por defecto
     async fetchProducts() {
-        if (this.cachedProducts) {
-            return this.cachedProducts;
-        }
-
+        const cachedVersion = window.cachedProductsVersion;
+    
         try {
-            // Intentar obtener desde Google Sheets
-            const response = await fetch(this.apiConfig.google.SheetsUrl);
+            const response = await fetch(`${this.apiConfig.google.SheetsUrl}?t=${Date.now()}`);
             const data = await response.json();
-
-            this.cachedProducts = data.map(product => ({
-                ...product,
-                price: parseFloat(product.price),
-                stock: parseInt(product.stock)
-            }));
-
-            // Guardar en el caché global
+    
+            const newVersion = data.version;
+            const products = data.products;
+    
+            if (this.cachedProducts && cachedVersion === newVersion) {
+                return this.cachedProducts;
+            }
+    
+            this.cachedProducts = products
+                .map(product => ({
+                    ...product,
+                    price: parseFloat(product.price),
+                    stock: parseInt(product.stock)
+                }))
+                .filter(product => product.stock > 0);
+    
             window.cachedProducts = this.cachedProducts;
-
-            // El orden por relevancia ordena por ID de producto secuencial. La primera carga lo hace de esta manera.
-            //return this.cachedProducts.sort(sortProducts('relevance'));
+            window.cachedProductsVersion = newVersion;
+    
             return this.cachedProducts;
+    
         } catch (error) {
             console.error('Error al obtener productos desde Google Sheets:', error);
-            console.warn('Cargando productos por defecto.');
-
-            try {
-                const defaultResponse = await fetch(this.defaultProductsPath);
-
-                if (!defaultResponse.ok) {
-                    throw new Error("No se pudo cargar DefaultProducts.json");
-                }
-
-                const defaultProducts = await defaultResponse.json();
-
-                this.cachedProducts = defaultProducts.map(product => ({
-                    ...product,
-                    price: HelperService.formatPrice(product.price)
-                }));
-
-                // Guardar en el caché global
-                window.cachedProducts = this.cachedProducts;
-
-                return this.cachedProducts;
-            } catch (fetchError) {
-                console.error('Error al cargar productos por defecto:', fetchError);
-                return [];
-            }
+            return [];
         }
-    }
+    }    
 
     async getFilteredProducts(filters) {
         const products = await this.fetchProducts();

@@ -150,7 +150,7 @@ async function renderProducts(products) {
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>
-                    <p class="product-brand">${product.brand}</p>
+                    <p class="product-brand">${product.brand} | ${product.volume}</p>
                     <div class="product-notes">
                         ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
                         ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
@@ -266,7 +266,7 @@ function openProductDetail(productId) {
                 </div>
                 <div class="product-detail-info">
                     <h2 class="product-detail-name">${product.name}</h2>
-                    <p class="product-detail-brand">${product.brand} | ${product.gender}</p>
+                    <p class="product-detail-brand">${product.brand} | ${product.gender} | ${product.volume}</p>
                     <p class="product-detail-price">${HelperService.formatPrice(product.price)}</p>
                     <p class="product-detail-description">${product.description}</p>
                     
