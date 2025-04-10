@@ -56,6 +56,6 @@ export const storeConfig = {
 
 export const apiConfig = {
     google: {
-        SheetsUrl: "https://script.google.com/macros/s/AKfycbzBgfiHrX4mhP__R_6CbLcpxv2JmXAQw_BCsjE7YeUjind3RNfpcaJ6PLrWlQw9MfmJWg/exec"
+        SheetsUrl: "https://script.google.com/macros/s/AKfycbx0-s_Jm9mSXfNJIUIsbHgPYLzVCeQw10qCuAG2e_sbbN4Ltj5VewbcqGupzyGykqUwdw/exec"
     }
 };
