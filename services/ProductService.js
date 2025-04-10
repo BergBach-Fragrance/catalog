@@ -20,7 +20,7 @@ export class ProductService {
 
         try {
             // Intentar obtener desde Google Sheets
-            const response = await fetch(this.apiConfig.google.SheetsUrl, { mode: 'no-cors' });
+            const response = await fetch(this.apiConfig.google.SheetsUrl);
             const data = await response.json();
 
             this.cachedProducts = data.map(product => ({
