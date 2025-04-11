@@ -530,6 +530,47 @@ footer {
     background: var(--primary-color);
 }
 
+
+/* Error Page*/
+
+.error-page {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.error-page h2 {
+    font-size: 24px;
+    margin: 20px 0 10px;
+}
+
+.error-page p {
+    font-size: 16px;
+    color: #777;
+}
+
+.error-page button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.error-page button:hover {
+    background-color: #444;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    opacity: 0.8;
+}
+
 /* Responsiveness */
 @media (max-width: 768px) {
     .product-detail-modal {

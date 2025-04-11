@@ -44,6 +44,14 @@ async function loadProducts() {
         // Obtener los productos desde Google Sheets
         const products = await productService.fetchProducts();
         
+        if (products.length === 0) {
+            document.querySelector('.search-filter').style.display = 'none';
+            document.querySelector('.progress-container').style.display = 'none';
+            document.querySelector('.loading').style.display = 'none';
+            showErrorPage();
+            return;
+        }
+
         // Filtrar productos con stock > 0
         const availableProducts = products.filter(product => product.stock > 0);
 
@@ -435,3 +443,15 @@ window.onclick = function(event) {
         closeModal();
     }
 };
+
+function showErrorPage() {
+    const container = document.getElementById('products-container');
+    container.innerHTML = `
+        <div class="error-page">
+            <img src="imgs/error-icon.svg" alt="Error" class="error-icon">
+            <h2>¡Uy! No pudimos cargar los productos</h2>
+            <p>Estamos teniendo problemas para conectarnos al catálogo. Intenta recargar la página o vuelve más tarde.</p>
+            <button onclick="location.reload()">Reintentar</button>
+        </div>
+    `;
+}
