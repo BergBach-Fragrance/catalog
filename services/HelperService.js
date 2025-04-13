@@ -1,4 +1,3 @@
-
 export class HelperService {
 
     static SanitizeFilters(filters) {
