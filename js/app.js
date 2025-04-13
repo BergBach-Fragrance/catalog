@@ -1,10 +1,10 @@
-import { LoaderService } from '../services/LoaderService.js';
 import { apiConfig } from '../config/config.js';
 import { HelperService } from '../services/HelperService.js';
-import { ProductService } from '../services/ProductService.js';
+import { LoaderService } from '../services/LoaderService.js';
 import { PaginationService } from '../services/PaginationService.js';
-import { ProductCardComponent } from '../components/ProductCardComponent.js';
+import { ProductService } from '../services/ProductService.js';
 import { FilterService } from '../services/FilterService.js';
+import { ProductCardComponent } from '../components/ProductCardComponent.js';
 
 const productService = new ProductService(apiConfig);
 
@@ -35,19 +35,7 @@ window.onload = function() {
 
 // Función para cargar los productos
 async function loadProducts() {
-    const progressContainer = document.querySelector('.progress-container');
-    const loadingElement = document.querySelector('.loading');
-    
     try {
-        // Verificar que los elementos existen antes de manipularlos
-        if (progressContainer) {
-            progressContainer.style.display = 'block';
-        }
-        
-        if (loadingElement) {
-            loadingElement.style.display = 'block';
-        }
-        
         LoaderService.showLoader();
         LoaderService.showProgressBar();
         FilterService.disableFilters();
@@ -57,8 +45,6 @@ async function loadProducts() {
         
         if (products.length === 0) {
             document.querySelector('.search-filter').style.display = 'none';
-            document.querySelector('.progress-container').style.display = 'none';
-            document.querySelector('.loading').style.display = 'none';
             showErrorPage();
             return;
         }
@@ -72,27 +58,8 @@ async function loadProducts() {
 
         // Renderizar los productos disponibles
         renderProducts(availableProducts);
-
-        // Ocultar elementos con verificación
-        if (progressContainer) {
-            progressContainer.style.display = 'none';
-        }
-        
-        if (loadingElement) {
-            loadingElement.style.display = 'none';
-        }
     } catch (error) {
         console.error("Error al cargar los productos:", error);
-        
-        // Ocultar elementos con verificación en caso de error
-        if (progressContainer) {
-            progressContainer.style.display = 'none';
-        }
-        
-        if (loadingElement) {
-            loadingElement.style.display = 'none';
-        }
-
         showErrorPage();
     } finally {
         LoaderService.hideLoader();
@@ -320,24 +287,14 @@ function closeModal() {
 window.closeModal = closeModal;
 
 async function filterProducts() {
-    const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-    const brandFilter = document.getElementById('brand-filter').value.trim();
-    const genderFilter = document.getElementById('gender-filter').value.trim();
-    const sortFilter = document.getElementById('sort-filter').value.trim();
-
-    // Crear un objeto con los filtros actuales
-    const filters = {
-        searchTerm: searchTerm,
-        brand: brandFilter,
-        gender: genderFilter,
-        sortBy: sortFilter
-    };
+    const filters = FilterService.getFilters();
 
     try {
         const filteredProducts = await productService.getFilteredProducts(filters);
 
         if (!Array.isArray(filteredProducts)) {
             console.error('filteredProducts no es un array:', filteredProducts);
+            UIService.renderError('Los productos filtrados no tienen el formato correcto.');
             return;
         }
 
@@ -347,6 +304,7 @@ async function filterProducts() {
         renderProducts(filteredProducts);
     } catch (error) {
         console.error('Error al filtrar los productos:', error);
+        UIService.renderError('Hubo un problema al cargar los productos. Intenta nuevamente.');
     }
 }
 

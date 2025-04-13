@@ -1,9 +1,9 @@
-import { apiConfig } from '../config/config.js';
+import { storeConfig } from '../config/config.js';
 
 export class LoaderService {
 
     static initLoader() {
-        const loaderConfig = apiConfig.storeConfig.site.loader;
+        const loaderConfig = storeConfig.site.loader;
         const loaderContainer = document.getElementById('lottie-loader');
         const loaderText = document.querySelector('.loader-text');
 

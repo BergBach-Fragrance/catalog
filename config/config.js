@@ -9,10 +9,9 @@ export const storeConfig = {
         title: "Fragancias de Oriente - Catalog",
         url: "https://bergbach-fragrance.github.io/catalog/",
         previewImage: "imgs/bergbach-fragrance-preliminar.jpg",
-
         loader: {
-            animationUrl: "https://lottie.host/5de9a084-054a-4b69-9402-e9d0918cfec6/W4G6vOq17e.json",
-            loadingText: "Cargando productos..."
+            animationUrl: 'https://assets9.lottiefiles.com/packages/lf20_usmfx6bp.json',
+            loadingText: "Explorando Fragancias Disponibles..."
         }
     },
     

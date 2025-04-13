@@ -4,7 +4,6 @@ export class ProductService {
     constructor(apiConfig) {
         this.apiConfig = apiConfig;
         this.cachedProducts = null;
-        this.defaultProductsPath = './products/default/DefaultProducts.json';
 
         // Si ya hay productos en el cache global, usarlos
         if (window.cachedProducts) {

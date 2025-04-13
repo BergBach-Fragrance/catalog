@@ -249,30 +249,6 @@ h1 {
     background-color: #6b4331;
 }
 
-.loading {
-    position: absolute;
-    top: 50%; /* Centrado verticalmente */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-    color: #555;
-    z-index: 5; /* Asegura que el texto esté debajo de la barra */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Espacio entre el icono y el texto */
-}
-
-.loading i {
-    animation: rotate 1s linear infinite;
-    margin-right: 0.5rem;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
 footer {
     background-color: #333;
     color: white;
@@ -638,42 +614,44 @@ footer {
     min-height: 200px; /* Ajusta según lo que necesites, para darle algo de altura */
 }
 
-/* Barra de progreso */
-.progress-container {
-    position: absolute;
-    top: 0; /* Colocamos la barra en la parte superior de este contenedor */
-    left: 0;
-    width: 100%; /* Ancho completo */
-    height: 10px; /* Espesor de la barra */
-    background-color: #f3f3f3; /* Fondo de la barra */
-    z-index: 10; /* Barra sobre los elementos de la carga */
-}
 
-#progress-bar {
-    width: 0%;
-    height: 100%;
-    background-color: #34db9b; /* Color de la barra */
-    transition: width 0.1s ease-in-out;
-}
-
+/* Loader Overlay */
 .loader-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.95);
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(4px);
     z-index: 9999;
-    display: none;
-    align-items: center;
+    display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
 }
 
+.loader-content {
+    text-align: center;
+    color: white;
+}
+
+.lottie-loader {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+}
+
 .loader-text {
-    margin-top: 15px;
-    font-size: 1.1rem;
-    color: #555;
+    font-size: 1.2rem;
+    font-weight: 400;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
 .show-more-button {
