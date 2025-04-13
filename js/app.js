@@ -17,14 +17,14 @@ const PRODUCTS_PER_PAGE = 50;
 
 // Inicializar todo cuando la página se carga
 window.onload = function() {
+    // Inicializar eventos de filtros
+    initEvents();
+
     // Inicializar animación del loader
     LoaderService.initLoader();
 
     // Mostrar el loader mientras se cargan los productos
     LoaderService.showLoader();
-
-    // Inicializar eventos de filtros
-    initEvents();
 
     // Cargar productos
     loadProducts().then(() => {
@@ -287,9 +287,11 @@ function closeModal() {
 window.closeModal = closeModal;
 
 async function filterProducts() {
-    const filters = FilterService.getFilters();
-
     try {
+        LoaderService.showLoader();
+        FilterService.disableFilters();
+
+        const filters = FilterService.getFilters();
         const filteredProducts = await productService.getFilteredProducts(filters);
 
         if (!Array.isArray(filteredProducts)) {
@@ -298,13 +300,16 @@ async function filterProducts() {
             return;
         }
 
-        // Reiniciar la página al filtrar
         currentPage = 1;
         displayedProducts = [];
         renderProducts(filteredProducts);
+
     } catch (error) {
         console.error('Error al filtrar los productos:', error);
         UIService.renderError('Hubo un problema al cargar los productos. Intenta nuevamente.');
+    } finally {
+        FilterService.enableFilters();
+        LoaderService.hideLoader();
     }
 }
 

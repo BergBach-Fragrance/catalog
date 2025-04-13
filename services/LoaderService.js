@@ -27,8 +27,10 @@ export class LoaderService {
         if (loaderOverlay) {
             console.log("Mostrando loader...");
             loaderOverlay.style.display = 'flex';
+        } else {
+            console.warn("No se encontró .loader-overlay en el DOM.");
         }
-    }    
+    }       
 
     static hideLoader() {
         const loaderOverlay = document.querySelector('.loader-overlay');
