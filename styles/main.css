@@ -656,6 +656,26 @@ footer {
     transition: width 0.1s ease-in-out;
 }
 
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loader-text {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    color: #555;
+}
+
 .show-more-button {
     display: block;
     width: 200px;

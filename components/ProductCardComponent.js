@@ -15,7 +15,7 @@ export class ProductCardComponent {
             </div>
             <div class="product-info">
                 <h3 class="product-name">${product.name}</h3>
-                <p class="product-brand">${product.brand}</p>
+                <p class="product-brand">${product.brand} | ${product.volume}</p>
                 <div class="product-notes">
                     ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
                     ${product.notes.length > 3 ? `<span class="note">+${product.notes.length - 3}</span>` : ''}

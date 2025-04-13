@@ -1,6 +1,10 @@
+import { LoaderService } from '../services/LoaderService.js';
 import { apiConfig } from '../config/config.js';
 import { HelperService } from '../services/HelperService.js';
 import { ProductService } from '../services/ProductService.js';
+import { PaginationService } from '../services/PaginationService.js';
+import { ProductCardComponent } from '../components/ProductCardComponent.js';
+import { FilterService } from '../services/FilterService.js';
 
 const productService = new ProductService(apiConfig);
 
@@ -13,11 +17,20 @@ const PRODUCTS_PER_PAGE = 50;
 
 // Inicializar todo cuando la página se carga
 window.onload = function() {
-    // Inicializar eventos de filtrado
+    // Inicializar animación del loader
+    LoaderService.initLoader();
+
+    // Mostrar el loader mientras se cargan los productos
+    LoaderService.showLoader();
+
+    // Inicializar eventos de filtros
     initEvents();
-    
+
     // Cargar productos
-    loadProducts();
+    loadProducts().then(() => {
+        // Ocultar loader cuando termine la carga
+        LoaderService.hideLoader();
+    });
 };
 
 // Función para cargar los productos
@@ -33,13 +46,11 @@ async function loadProducts() {
         
         if (loadingElement) {
             loadingElement.style.display = 'block';
-        }        
+        }
         
-        // Mostrar la barra de progreso al inicio de la carga
-        showProgressBar();
-
-        // Deshabilitar filtros mientras se carga
-        disableFilters();
+        LoaderService.showLoader();
+        LoaderService.showProgressBar();
+        FilterService.disableFilters();
         
         // Obtener los productos desde Google Sheets
         const products = await productService.fetchProducts();
@@ -81,43 +92,12 @@ async function loadProducts() {
         if (loadingElement) {
             loadingElement.style.display = 'none';
         }
+
+        showErrorPage();
     } finally {
-        enableFilters();
+        LoaderService.hideLoader();
+        FilterService.enableFilters();
     }
-}
-
-// Función para mostrar y actualizar la barra de progreso
-function showProgressBar() {
-    const progressBarContainer = document.querySelector('.progress-container');
-    progressBarContainer.style.display = 'block'; // Mostrar la barra
-
-    let progress = 0;
-    const progressBar = document.querySelector('.progress-bar');
-
-    const interval = setInterval(() => {
-        if (progress < 100) {
-            progress += 1;  // Aumentar el progreso
-            progressBar.style.width = progress + '%';  // Actualizar el ancho de la barra
-        } else {
-            clearInterval(interval);  // Detener la animación cuando llegue al 100%
-        }
-    }, 100);  // Aumenta el progreso cada 100 ms
-}
-
-// Función para bloquear los filtros
-function disableFilters() {
-    document.getElementById('search-input').disabled = true;
-    document.getElementById('brand-filter').disabled = true;
-    document.getElementById('gender-filter').disabled = true;
-    document.getElementById('sort-filter').disabled = true;
-}
-
-// Función para desbloquear los filtros
-function enableFilters() {
-    document.getElementById('search-input').disabled = false;
-    document.getElementById('brand-filter').disabled = false;
-    document.getElementById('gender-filter').disabled = false;
-    document.getElementById('sort-filter').disabled = false;
 }
 
 // Función para renderizar los productos con paginación acumulativa
@@ -131,56 +111,23 @@ async function renderProducts(products) {
         displayedProducts = [];
     }
 
-    if (products.length === 0) {
-        container.innerHTML = '<div class="no-results">No se encontraron productos disponibles.</div>';
-        return;
-    }
-
     // Calcular el rango de productos para la página actual
     const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
     const endIndex = startIndex + PRODUCTS_PER_PAGE;
     const productsToRender = products.slice(startIndex, endIndex);
 
-    let html = '';
-
     for (const product of productsToRender) {
         // Evitar productos duplicados
         if (!displayedProducts.some(p => p.id === product.id)) {
-            const imageUrl = await getMainProductImage(product.id);
-
-            const formattedPrice = HelperService.formatPrice(product.price);
-
-            html += `
-            <div class="product-card" data-id="${product.id}">
-                <div class="product-image">
-                    <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
-                    <div class="product-badge">${product.gender}</div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <p class="product-brand">${product.brand} | ${product.volume}</p>
-                    <div class="product-notes">
-                        ${product.notes.slice(0, 3).map(note => `<span class="note">${note}</span>`).join('')}
-                        ${product.notes.length > 3 ? '<span class="note">+' + (product.notes.length - 3) + '</span>' : ''}
-                    </div>
-                    <div class="product-bottom">
-                        <p class="product-price">${formattedPrice}</p>
-                        <button class="view-details" onclick="openProductDetail('${product.id}')">Ver detalles</button>
-                    </div>
-                </div>
-            </div>
-            `;
-            
+            const productCard = await ProductCardComponent.render(product);
+            container.innerHTML += productCard;
             // Agregar el producto a los productos mostrados
             displayedProducts.push(product);
         }
     }
 
-    // Añadir los productos renderizados al contenedor
-    container.innerHTML += html;
-
-    // Mostrar/ocultar botón de "Mostrar más"
-    updateShowMoreButton(products);
+    // Mostrar/ocultar botón de paginación
+    PaginationService.updateShowMoreButton(products, displayedProducts, loadMoreProducts);
 }
 
 function getMainProductImage(productId) {
@@ -324,28 +271,6 @@ function openProductDetail(productId) {
 }
 
 window.openProductDetail = openProductDetail;
-
-// Función para actualizar el botón de "Mostrar más"
-function updateShowMoreButton(products) {
-    const container = document.getElementById('products-container');
-    
-    // Remover cualquier botón existente
-    const existingShowMoreBtn = document.getElementById('show-more-btn');
-    if (existingShowMoreBtn) {
-        existingShowMoreBtn.remove();
-    }
-
-    // Si hay más productos para mostrar, añadir el botón
-    if (displayedProducts.length < products.length) {
-        const showMoreBtn = document.createElement('button');
-        showMoreBtn.id = 'show-more-btn';
-        showMoreBtn.className = 'show-more-button';
-        showMoreBtn.textContent = 'Mostrar más';
-        showMoreBtn.onclick = loadMoreProducts;
-        
-        container.insertAdjacentElement('afterend', showMoreBtn);
-    }
-}
 
 // Función para cargar más productos
 function loadMoreProducts() {
