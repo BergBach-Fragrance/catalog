@@ -67,7 +67,6 @@ export class ProductService {
         }).sort(this.sortProducts(sanitizedFilters.sortBy));
     }
 
-    // Método para ordenar productos
     sortProducts(criteria) {
         return (a, b) => {
             switch (criteria) {

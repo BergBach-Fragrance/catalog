@@ -1,10 +1,10 @@
 import { apiConfig } from '../config/config.js';
-import { HelperService } from '../services/HelperService.js';
 import { LoaderService } from '../services/LoaderService.js';
 import { PaginationService } from '../services/PaginationService.js';
 import { ProductService } from '../services/ProductService.js';
 import { FilterService } from '../services/FilterService.js';
 import { ProductCardComponent } from '../components/ProductCardComponent.js';
+import { ProductDetailModalComponent } from '../components/ProductDetailModalComponent.js';
 
 const productService = new ProductService(apiConfig);
 
@@ -37,7 +37,6 @@ window.onload = function() {
 async function loadProducts() {
     try {
         LoaderService.showLoader();
-        LoaderService.showProgressBar();
         FilterService.disableFilters();
         
         // Obtener los productos desde Google Sheets
@@ -97,144 +96,11 @@ async function renderProducts(products) {
     PaginationService.updateShowMoreButton(products, displayedProducts, loadMoreProducts);
 }
 
-function getMainProductImage(productId) {
-    return new Promise((resolve) => {
-        const mainImagePath = `./products/images/${productId}/${productId}-image-0-main.jpg`;
-        const placeholderPath = './imgs/placeholder.jpg';
-
-        const img = new Image();
-
-        // Manejar la carga exitosa
-        img.onload = () => resolve(mainImagePath);
-
-        // Manejar el error sin que se registre en la consola
-        img.onerror = () => resolve(placeholderPath);
-
-        // Asignar la ruta de la imagen
-        img.src = mainImagePath;
-    });
-}
-
-// Función para abrir el modal de detalle de producto con carrusel
 function openProductDetail(productId) {
     const product = displayedProducts.find(p => p.id === productId);
-    const modal = document.getElementById('product-detail-modal');
-    const modalContent = document.getElementById('modal-content');
-    
     if (!product) return;
-    
-    // Function to generate image URLs for the carousel
-    function generateCarouselImages(productId, maxImages = 5) {
-        const images = [];
-        
-        // Check main image first (using your existing function)
-        const mainImageCheck = getMainProductImage(productId)
-            .then(mainImagePath => {
-                // If main image is found, add it to the start of the array
-                if (mainImagePath !== './imgs/placeholder.jpg') {
-                    images.push(mainImagePath);
-                }
-                
-                // Then try to load additional images
-                for (let i = 1; i < maxImages; i++) {
-                    const imagePath = `./products/images/${productId}/${productId}-image-${i}.jpg`;
-                    
-                    // Create a promise to check if each image exists
-                    const imagePromise = new Promise((resolve) => {
-                        const img = new Image();
-                        img.onload = () => resolve(imagePath);
-                        img.onerror = () => resolve(null);
-                        img.src = imagePath;
-                    });
-                    
-                    images.push(imagePromise);
-                }
-                
-                // Wait for all image promises to resolve
-                return Promise.all(images);
-            });
-        
-        return mainImageCheck;
-    }
-    
-    // Generate carousel images
-    generateCarouselImages(productId)
-        .then(resolvedImages => {
-            // Filter out null images
-            const validImages = resolvedImages.filter(img => img !== null);
-            
-            // Prepare carousel HTML
-            let carouselItems = validImages.map(imageUrl => `
-                <div class="carousel-item">
-                    <img src="${imageUrl}" alt="${product.name}" onerror="this.onerror=null; this.src='imgs/placeholder.jpg';">
-                </div>
-            `).join('');
-            
-            // Fallback to placeholder if no images found
-            if (validImages.length === 0) {
-                carouselItems = `
-                <div class="carousel-item">
-                    <img src="imgs/placeholder.jpg" alt="${product.name}">
-                </div>
-                `;
-            }
-            
-            // Rest of the modal content remains the same
-            let html = `
-                <div class="product-carousel">
-                    <div class="carousel-container">
-                        ${carouselItems}
-                    </div>
-                </div>
-                <div class="product-detail-info">
-                    <h2 class="product-detail-name">${product.name}</h2>
-                    <p class="product-detail-brand">${product.brand} | ${product.gender} | ${product.volume}</p>
-                    <p class="product-detail-price">${HelperService.formatPrice(product.price)}</p>
-                    <p class="product-detail-description">${product.description}</p>
-                    
-                    <div class="notes-section">
-                        <h4 class="notes-title">Notas aromáticas:</h4>
-                        <div class="notes-list">
-                            ${product.notes && Array.isArray(product.notes) ? 
-                              product.notes.map(note => `<span class="note-item">${note}</span>`).join('') : 
-                              '<span class="note-item">Sin información de notas</span>'}
-                        </div>
-                    </div>
-                    
-                    ${product.hasVideo && product.videoUrl && product.videoUrl.trim() !== "" ? `
-                    <div class="product-video">
-                        <h4 class="notes-title">Video del producto:</h4>
-                        <video controls>
-                            <source src="${product.videoUrl}" type="video/mp4">
-                            Tu navegador no soporta la reproducción de videos.
-                        </video>
-                    </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            modalContent.innerHTML = html;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Inicializar el carrusel
-            initCarousel();
-        })
-        .catch(error => {
-            console.error('Error loading product images:', error);
-            // Fallback to placeholder if any error occurs
-            modalContent.innerHTML = `
-                <div class="product-carousel">
-                    <div class="carousel-container">
-                        <div class="carousel-item">
-                            <img src="imgs/placeholder.jpg" alt="Imagen no disponible">
-                        </div>
-                    </div>
-                </div>
-            `;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        });
+
+    ProductDetailModalComponent.open(product);
 }
 
 window.openProductDetail = openProductDetail;
@@ -243,33 +109,6 @@ window.openProductDetail = openProductDetail;
 function loadMoreProducts() {
     currentPage++;
     renderProducts(allProducts);
-}
-
-// Función para inicializar el carrusel con TinySlider
-function initCarousel() {
-    const carouselContainer = document.querySelector('.carousel-container');
-    if (!carouselContainer) return;
-
-    if (window.tinySliderInstance) {
-        window.tinySliderInstance.destroy();
-    }
-
-    window.tinySliderInstance = tns({
-        container: '.carousel-container',
-        items: 1,
-        slideBy: 1,
-        autoplay: false,
-        controls: true,
-        nav: true,
-        navPosition: 'bottom',
-        controlsText: [
-            '<i class="fas fa-chevron-left"></i>',
-            '<i class="fas fa-chevron-right"></i>'
-        ],
-        responsive: {
-            0: { edgePadding: 20 }
-        }
-    });
 }
 
 // Función para cerrar el modal

@@ -24,4 +24,30 @@ export class UIService {
         errorContainer.textContent = '';
         errorContainer.style.display = 'none';
     }
+
+    static initCarousel() {
+        const carouselContainer = document.querySelector('.carousel-container');
+        if (!carouselContainer) return;
+
+        if (window.tinySliderInstance) {
+            window.tinySliderInstance.destroy();
+        }
+
+        window.tinySliderInstance = tns({
+            container: '.carousel-container',
+            items: 1,
+            slideBy: 1,
+            autoplay: false,
+            controls: true,
+            nav: true,
+            navPosition: 'bottom',
+            controlsText: [
+                '<i class="fas fa-chevron-left"></i>',
+                '<i class="fas fa-chevron-right"></i>'
+            ],
+            responsive: {
+                0: { edgePadding: 20 }
+            }
+        });
+    }
 }
