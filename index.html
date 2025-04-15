@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,23 +14,26 @@
     <!-- Own Styles -->
     <link rel="stylesheet" href="styles/main.css">
 
-    
+
 
     <!-- Meta tags for Open Graph -->
     <meta property="og:title" content="" id="og-title" />
-    <meta property="og:description" content="Descubre una amplia variedad de fragancias únicas en nuestro catálogo exclusivo." />
+    <meta property="og:description"
+        content="Descubre una amplia variedad de fragancias únicas en nuestro catálogo exclusivo." />
     <meta property="og:image" content="" id="og-image" />
     <meta property="og:url" content="" id="og-url" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Bergbach Fragrance" />
-    
+
     <!-- Meta tags for Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="" id="twitter-title" />
-    <meta name="twitter:description" content="Descubre una amplia variedad de fragancias únicas en nuestro catálogo exclusivo." />
+    <meta name="twitter:description"
+        content="Descubre una amplia variedad de fragancias únicas en nuestro catálogo exclusivo." />
     <meta name="twitter:image" content="" id="twitter-image" />
-    
+
 </head>
+
 <body>
     <header>
         <div class="header-content">
@@ -41,8 +45,9 @@
     <div class="loader-overlay" style="display: none;">
         <div class="loader-content">
             <div id="lottie-loader" class="lottie-loader"></div>
+            <div class="loader-text"></div>
         </div>
-    </div>    
+    </div>
 
     <div class="container">
         <div class="search-filter">
@@ -99,12 +104,13 @@
 
     <!-- Cargar la configuración -->
     <script type="module" src="config/config.js"></script>
-    
+
     <!-- Luego los scripts propios -->
     <script type="module" src="js/app.js"></script>
-    
+
     <!-- Script para aplicar la configuración -->
     <script type="module" src="js/setup.js"></script>
     <script type="module" src="services/ProductService.js"></script>
 </body>
+
 </html>

@@ -23,6 +23,7 @@ export class LoaderService {
     }
 
     static showLoader() {
+        console.log("Mostrando loader...");
         const loaderOverlay = document.querySelector('.loader-overlay');
         if (loaderOverlay) {
             loaderOverlay.style.display = 'flex';
