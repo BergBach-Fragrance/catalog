@@ -1,8 +1,8 @@
 import { apiConfig } from '../config/config.js';
 import { LoaderService } from '../services/LoaderService.js';
-import { PaginationService } from '../services/PaginationService.js';
 import { ProductService } from '../services/ProductService.js';
 import { FilterService } from '../services/FilterService.js';
+import { UIService } from '../services/UIService.js';
 import { ProductCardComponent } from '../components/ProductCardComponent.js';
 import { ProductDetailModalComponent } from '../components/ProductDetailModalComponent.js';
 
@@ -10,10 +10,7 @@ const productService = new ProductService(apiConfig);
 
 // Variables globales
 let tinySlider;
-let allProducts = []; // Cambio: almacenar todos los productos originales
 let displayedProducts = []; // Nuevo: almacenar productos mostrados
-let currentPage = 1;
-const PRODUCTS_PER_PAGE = 50;
 
 // Inicializar todo cuando la página se carga
 window.onload = function() {
@@ -51,8 +48,6 @@ async function loadProducts() {
         // Filtrar productos con stock > 0
         const availableProducts = products.filter(product => product.stock > 0);
 
-        // Reiniciar la página al cargar productos
-        currentPage = 1;
         displayedProducts = [];        
 
         // Renderizar los productos disponibles
@@ -69,20 +64,8 @@ async function loadProducts() {
 // Función para renderizar los productos con paginación acumulativa
 async function renderProducts(products) {
     const container = document.getElementById('products-container');
-    
-    // Primera carga: reiniciar todo
-    if (currentPage === 1) {
-        container.innerHTML = '';
-        allProducts = products;
-        displayedProducts = [];
-    }
 
-    // Calcular el rango de productos para la página actual
-    const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-    const endIndex = startIndex + PRODUCTS_PER_PAGE;
-    const productsToRender = products.slice(startIndex, endIndex);
-
-    for (const product of productsToRender) {
+    for (const product of products) {
         // Evitar productos duplicados
         if (!displayedProducts.some(p => p.id === product.id)) {
             const productCard = await ProductCardComponent.render(product);
@@ -91,9 +74,6 @@ async function renderProducts(products) {
             displayedProducts.push(product);
         }
     }
-
-    // Mostrar/ocultar botón de paginación
-    PaginationService.updateShowMoreButton(products, displayedProducts, loadMoreProducts);
 }
 
 function openProductDetail(productId) {
@@ -104,12 +84,6 @@ function openProductDetail(productId) {
 }
 
 window.openProductDetail = openProductDetail;
-
-// Función para cargar más productos
-function loadMoreProducts() {
-    currentPage++;
-    renderProducts(allProducts);
-}
 
 // Función para cerrar el modal
 function closeModal() {
@@ -139,7 +113,6 @@ async function filterProducts() {
             return;
         }
 
-        currentPage = 1;
         displayedProducts = [];
         renderProducts(filteredProducts);
 
