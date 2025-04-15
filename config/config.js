@@ -10,8 +10,12 @@ export const storeConfig = {
         url: "https://bergbach-fragrance.github.io/catalog/",
         previewImage: "imgs/bergbach-fragrance-preliminar.jpg",
         loader: {
-            animationUrl: 'https://assets9.lottiefiles.com/packages/lf20_usmfx6bp.json',
-            loadingText: "Explorando Fragancias Disponibles..."
+            //animationUrl: 'https://assets9.lottiefiles.com/packages/lf20_usmfx6bp.json',
+            animationUrl: './assets/animations/loader_animation.json',
+            //animationUrl: './assets/animations/loader_animation.lottie',
+            //animationUrl: './assets/animations/perfume-bottle-loader.svg',
+            //animationUrl: './assets/animations/bottle-loader-animation.json',
+            loadingText: "Explorando Fragancias..."
         }
     },
     
