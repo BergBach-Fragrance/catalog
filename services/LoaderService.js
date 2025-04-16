@@ -1,4 +1,4 @@
-// Nueva clase LoaderService usando SpinKit
+// Nueva clase LoaderService usando SpinKit con animación centrada
 import { storeConfig } from '../config/config.js';
 
 export class LoaderService {
@@ -13,27 +13,56 @@ export class LoaderService {
             
             // Crear animación perfume con SpinKit modificado
             const spinnerHTML = `
-                <div class="perfume-loader">
-                    <div class="bottle">
-                        <div class="cap"></div>
-                        <div class="neck"></div>
-                        <div class="body">
-                            <div class="liquid"></div>
-                            <div class="shine"></div>
+                <div class="loader-content">
+                    <div class="perfume-loader">
+                        <div class="bottle">
+                            <div class="cap"></div>
+                            <div class="neck"></div>
+                            <div class="body">
+                                <div class="liquid"></div>
+                                <div class="shine"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <style>
+                    .loader-overlay {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        height: 100%;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        z-index: 9999;
+                    }
+                    
+                    .loader-content {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    
                     .perfume-loader {
                         width: 100px;
                         height: 150px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                         margin: 0 auto;
                         position: relative;
                     }
+                    
                     .bottle {
                         position: relative;
                         animation: pulse 2s infinite;
+                        margin: 0 auto;
                     }
+                    
                     .cap {
                         width: 30px;
                         height: 20px;
@@ -41,12 +70,14 @@ export class LoaderService {
                         border-radius: 5px;
                         margin: 0 auto;
                     }
+                    
                     .neck {
                         width: 15px;
                         height: 15px;
                         background: #b99784;
                         margin: 0 auto;
                     }
+                    
                     .body {
                         width: 70px;
                         height: 100px;
@@ -56,6 +87,7 @@ export class LoaderService {
                         overflow: hidden;
                         position: relative;
                     }
+                    
                     .liquid {
                         width: 100%;
                         height: 0%;
@@ -64,6 +96,7 @@ export class LoaderService {
                         bottom: 0;
                         animation: fillEmpty 3s infinite ease-in-out;
                     }
+                    
                     .shine {
                         width: 10px;
                         height: 30px;
@@ -75,16 +108,25 @@ export class LoaderService {
                         opacity: 0;
                         animation: shine 3s infinite ease-in-out;
                     }
+                    
+                    .loader-text {
+                        text-align: center;
+                        width: 100%;
+                        margin-top: 15px;
+                    }
+                    
                     @keyframes pulse {
                         0% { transform: scale(1); }
                         50% { transform: scale(1.05); }
                         100% { transform: scale(1); }
                     }
+                    
                     @keyframes fillEmpty {
                         0% { height: 0%; }
                         50% { height: 60%; }
                         100% { height: 0%; }
                     }
+                    
                     @keyframes shine {
                         0% { opacity: 0; }
                         50% { opacity: 0.7; }
