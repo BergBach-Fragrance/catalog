@@ -61,9 +61,15 @@ async function loadProducts() {
     }
 }
 
-// Función para renderizar los productos con paginación acumulativa
-async function renderProducts(products) {
+// Función para renderizar los productos
+async function renderProducts(products, reset = true) {
     const container = document.getElementById('products-container');
+
+    if (reset) {
+        // Limpia el contenedor
+        container.innerHTML = '';
+        displayedProducts = [];
+    }
 
     for (const product of products) {
         // Evitar productos duplicados
@@ -114,6 +120,7 @@ async function filterProducts() {
         }
 
         displayedProducts = [];
+        console.log(filteredProducts);
         renderProducts(filteredProducts);
 
     } catch (error) {

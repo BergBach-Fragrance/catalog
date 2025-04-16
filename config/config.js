@@ -8,6 +8,7 @@ export const storeConfig = {
         copyright: "2025 Bergbach - Fragancias de Oriente. All rights reserved.",
         title: "Fragancias de Oriente - Catalog",
         url: "https://bergbach-fragrance.github.io/catalog/",
+        // Imagen destinada a los preview de los enlaces.
         previewImage: "imgs/bergbach-fragrance-preliminar.jpg",
         loader: {
             //animationUrl: 'https://assets9.lottiefiles.com/packages/lf20_usmfx6bp.json',
