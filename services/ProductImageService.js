@@ -14,7 +14,7 @@ export class ProductImageService {
   }
 
   // Genera una lista de imágenes válidas (máximo maxImages), incluyendo la principal primero
-  static async getAvailableProductImages(productId, maxImages = 2) {
+  static async getAvailableProductImages(productId, maxImages = 5) {
     const images = [];
 
     const mainImage = await this.getMainProductImage(productId);

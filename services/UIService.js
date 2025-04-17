@@ -41,10 +41,11 @@ export class UIService {
             controls: true,
             nav: true,
             navPosition: 'bottom',
-            controlsText: [
-                '<i class="fas fa-chevron-left"></i>',
-                '<i class="fas fa-chevron-right"></i>'
-            ],
+            swipeAngle: 15,
+            touch: true,
+            mouseDrag: true,
+            speed: 400,
+            controlsText: ['‹', '›'],
             responsive: {
                 0: { edgePadding: 20 }
             }
