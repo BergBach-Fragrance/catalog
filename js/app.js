@@ -120,7 +120,6 @@ async function filterProducts() {
         }
 
         displayedProducts = [];
-        console.log(filteredProducts);
         renderProducts(filteredProducts);
 
     } catch (error) {
@@ -134,13 +133,8 @@ async function filterProducts() {
 
 // Inicializar los eventos de filtrado
 function initEvents() {
-    // Evento para el buscador
-    document.getElementById('search-input').addEventListener('input', filterProducts);
-    
-    // Eventos para los selectores de filtro
-    document.getElementById('brand-filter').addEventListener('change', filterProducts);
-    document.getElementById('gender-filter').addEventListener('change', filterProducts);
-    document.getElementById('sort-filter').addEventListener('change', filterProducts);
+    FilterService.initSearchEvents(filterProducts);
+    FilterService.initSelectEvents(filterProducts);
 }
 
 // Cerrar modal si se hace clic fuera del contenido

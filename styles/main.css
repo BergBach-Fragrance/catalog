@@ -91,7 +91,7 @@ h1 {
 
 .search-bar input {
     width: 100%;
-    padding: 0.8rem 1rem 0.8rem 2.5rem;
+    padding: 0.8rem 2.5rem 0.8rem 1rem;
     border: 1px solid #ddd;
     border-radius: 30px;
     font-size: 1rem;
@@ -104,12 +104,19 @@ h1 {
     box-shadow: 0 0 0 2px rgba(138, 90, 68, 0.2);
 }
 
-.search-bar i {
+.search-bar i.search-icon {
     position: absolute;
-    left: 1rem;
+    right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #888;
+    color: #ccc;
+    cursor: default;
+    transition: color 0.3s, cursor 0.3s;
+}
+
+.search-bar i.search-icon.active {
+    color: var(--primary-color);
+    cursor: pointer;
 }
 
 .filter-options {
