@@ -75,7 +75,7 @@ h1 {
     padding: 2rem 1rem;
 }
 
-.search-filter {
+.filters-container {
     display: flex;
     justify-content: space-between;
     margin-bottom: 2rem;
@@ -710,7 +710,7 @@ footer {
         font-size: 1.6rem;
     }
 
-    .search-filter {
+    .filters-container {
         flex-direction: column;
     }
 }

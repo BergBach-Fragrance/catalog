@@ -40,7 +40,7 @@ async function loadProducts() {
         const products = await productService.fetchProducts();
         
         if (products.length === 0) {
-            document.querySelector('.search-filter').style.display = 'none';
+            document.querySelector('.filters-container').style.display = 'none';
             showErrorPage();
             return;
         }
