@@ -1,6 +1,8 @@
 import { HelperService } from './HelperService.js';
 
 export class ProductService {
+    static PRODUCT_MARGIN = 30000;
+
     constructor(apiConfig) {
         this.apiConfig = apiConfig;
         this.cachedProducts = null;
@@ -29,7 +31,7 @@ export class ProductService {
             this.cachedProducts = products
                 .map(product => ({
                     ...product,
-                    price: parseFloat(product.price),
+                    price: Number(product.price) + ProductService.PRODUCT_MARGIN,
                     stock: parseInt(product.stock)
                 }))
                 .filter(product => product.stock > 0);
