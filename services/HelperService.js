@@ -30,7 +30,7 @@ export class HelperService {
 
   // Función para formatear precio en ARS
   static formatPrice(price) {
-    const adjustedPrice = price + 10000;
+    const adjustedPrice = price;
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
       currency: "ARS",

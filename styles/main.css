@@ -222,7 +222,6 @@ h1 {
     margin-top: 5px;
 }
 
-
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -243,6 +242,11 @@ h1 {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
+.product-card.out-of-stock {
+    opacity: 0.6;
+    filter: grayscale(0.1);
+}
+
 .product-image {
     height: 250px;
     overflow: hidden;
@@ -260,16 +264,39 @@ h1 {
     transform: scale(1.05);
 }
 
+/* 🏷️ Badge base (género + sin stock) */
 .product-badge {
     position: absolute;
     top: 1rem;
     right: 1rem;
+    z-index: 5;
     background-color: var(--secondary-color);
     color: white;
     padding: 0.3rem 0.6rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: bold;
+    pointer-events: none;
+    /* no bloquea clicks */
+}
+
+/* Badge de género (usa color secundario, arriba derecha) */
+.product-badge.gender-badge {
+    top: 1rem;
+    right: 1rem;
+}
+
+/* Badge de Sin stock (rojo, arriba izquierda) */
+.product-badge.out-of-stock {
+    top: 1rem;
+    left: 1rem;
+    right: auto;
+    background-color: #b91c1c;
+}
+
+/* Asegurarnos que en hover sigan arriba de todo */
+.product-card:hover .product-badge {
+    z-index: 10;
 }
 
 .product-info {
@@ -327,7 +354,6 @@ h1 {
     display: flex;
     justify-content: center;
     margin-top: auto;
-    /* Empuja el botón hacia abajo */
 }
 
 .view-details {
@@ -385,6 +411,12 @@ footer {
     z-index: 1000;
     overflow-y: auto;
     padding: 2rem;
+}
+
+.product-detail-stock.out-of-stock {
+    color: #b91c1c;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
 .modal-content {
@@ -591,11 +623,11 @@ footer {
     justify-content: space-between;
     transform: translateY(-50%);
     z-index: 10;
-    pointer-events: none; /* permite que los botones no bloqueen eventos */
+    pointer-events: none;
 }
 
 .tns-controls button {
-    pointer-events: all; /* necesario para que los botones funcionen */
+    pointer-events: all;
     background: rgba(255, 255, 255, 0.85);
     border: none;
     border-radius: 50%;
@@ -610,11 +642,6 @@ footer {
     justify-content: center;
     transition: background 0.3s;
 }
-
-.tns-controls button:hover {
-    background: white;
-}
-
 
 .tns-controls button:hover {
     background: white;
@@ -638,7 +665,6 @@ footer {
 .tns-nav button.tns-nav-active {
     background: var(--primary-color);
 }
-
 
 /* Error Page*/
 
@@ -750,11 +776,8 @@ footer {
 /* Contenedor de productos */
 #products-container {
     position: relative;
-    /* Asegura que los elementos dentro del contenedor se posicionen respecto a él */
     min-height: 200px;
-    /* Ajusta según lo que necesites, para darle algo de altura */
 }
-
 
 /* Loader Overlay */
 .loader-overlay {
