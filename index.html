@@ -48,27 +48,42 @@
     </div>
 
     <div class="container">
-        <div class="filters-container">
-            <div class="search-bar">
-                <input type="text" id="search-input">
-                <i class="fas fa-search search-icon" id="search-icon"></i>
-            </div>
-            <div class="filter-options">
-                <select id="brand-filter">
-                    <option value="">Todas las marcas</option>
-                    <!-- Opciones de marcas generadas dinámicamente -->
-                </select>
-                <select id="gender-filter">
-                    <option value="">Todos los generos</option>
-                    <!-- Opciones de géneros generadas dinámicamente -->
-                </select>
-                <select id="sort-filter">
-                    <!-- Opciones de ordenamiento generadas dinámicamente -->
-                </select>
+        <div class="catalog-tabs">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="perfumes" id="tab-perfumes">Perfumes</button>
+                <button class="tab-button" data-tab="decants" id="tab-decants">Decants</button>
             </div>
         </div>
 
-        <div id="products-container" class="products-grid"></div>
+        <div class="tab-content">
+            <div id="perfumes-view" class="tab-panel active">
+                <div class="filters-container" id="filters-container">
+                    <div class="search-bar">
+                        <input type="text" id="search-input">
+                        <i class="fas fa-search search-icon" id="search-icon"></i>
+                    </div>
+                    <div class="filter-options">
+                        <select id="brand-filter">
+                            <option value="">Todas las marcas</option>
+                            <!-- Opciones de marcas generadas dinámicamente -->
+                        </select>
+                        <select id="gender-filter">
+                            <option value="">Todos los generos</option>
+                            <!-- Opciones de géneros generadas dinámicamente -->
+                        </select>
+                        <select id="sort-filter">
+                            <!-- Opciones de ordenamiento generadas dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+
+                <div id="products-container" class="products-grid"></div>
+            </div>
+
+            <div id="decants-view" class="tab-panel">
+                <div id="decants-table-container" class="decants-table-container"></div>
+            </div>
+        </div>
     </div>
 
     <div id="product-detail-modal" class="product-detail-modal">

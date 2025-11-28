@@ -13,6 +13,18 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("header-subtitle").textContent =
     storeConfig.site.subtitle;
 
+  // Set tab labels
+  const perfumesTab = document.getElementById("tab-perfumes");
+  const decantsTab = document.getElementById("tab-decants");
+
+  if (perfumesTab && storeConfig.catalog?.tabs?.perfumes) {
+    perfumesTab.textContent = storeConfig.catalog.tabs.perfumes;
+  }
+
+  if (decantsTab && storeConfig.catalog?.tabs?.decants) {
+    decantsTab.textContent = storeConfig.catalog.tabs.decants;
+  }
+
   // Set the search input placeholder
   document.getElementById("search-input").placeholder =
     storeConfig.search.placeholder;

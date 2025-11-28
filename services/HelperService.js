@@ -36,4 +36,21 @@ export class HelperService {
       currency: "ARS",
     }).format(adjustedPrice);
   }
+
+  static SanitizeNotes(notes) {
+    if (!notes) return [];
+
+    if (Array.isArray(notes)) {
+      return notes.filter(Boolean);
+    }
+
+    if (typeof notes === "string") {
+      return notes
+        .split(",")
+        .map((note) => note.trim())
+        .filter(Boolean);
+    }
+
+    return [];
+  }
 }

@@ -5,12 +5,16 @@ import { FilterService } from "../services/FilterService.js";
 import { UIService } from "../services/UIService.js";
 import { ProductCardComponent } from "../components/ProductCardComponent.js";
 import { ProductDetailModalComponent } from "../components/ProductDetailModalComponent.js";
+import { DecantService } from "../services/DecantService.js";
+import { DecantTableComponent } from "../components/DecantTableComponent.js";
 
 const productService = new ProductService(apiConfig);
+const decantService = new DecantService(apiConfig);
 
 // Variables globales
 let tinySlider;
 let displayedProducts = []; // Nuevo: almacenar productos mostrados
+let decantsLoaded = false;
 
 // Inicializar todo cuando la página se carga
 window.onload = function () {
@@ -22,6 +26,9 @@ window.onload = function () {
 
   // Mostrar el loader mientras se cargan los productos
   LoaderService.showLoader();
+
+  // Inicializar tabs
+  initTabs();
 
   // Cargar productos
   loadProducts().then(() => {
@@ -141,10 +148,54 @@ async function filterProducts() {
   }
 }
 
+async function loadDecants() {
+  if (decantsLoaded) return;
+
+  try {
+    LoaderService.showLoader();
+    const decants = await decantService.fetchDecants();
+    renderDecants(decants);
+    decantsLoaded = true;
+  } catch (error) {
+    console.error("Error al cargar los decants:", error);
+    renderDecants([]);
+  } finally {
+    LoaderService.hideLoader();
+  }
+}
+
+function renderDecants(decants) {
+  const container = document.getElementById("decants-table-container");
+  if (!container) return;
+
+  container.innerHTML = DecantTableComponent.render(decants);
+  DecantTableComponent.initRowToggle();
+}
+
 // Inicializar los eventos de filtrado
 function initEvents() {
   FilterService.initSearchEvents(filterProducts);
   FilterService.initSelectEvents(filterProducts);
+}
+
+function initTabs() {
+  const tabButtons = document.querySelectorAll(".tab-button");
+  const panels = document.querySelectorAll(".tab-panel");
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selectedTab = button.dataset.tab;
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      panels.forEach((panel) => panel.classList.remove("active"));
+
+      button.classList.add("active");
+      document.getElementById(`${selectedTab}-view`)?.classList.add("active");
+
+      if (selectedTab === "decants") {
+        loadDecants();
+      }
+    });
+  });
 }
 
 // Cerrar modal si se hace clic fuera del contenido
