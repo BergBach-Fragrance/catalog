@@ -28,21 +28,26 @@ export class DecantTableComponent {
                 <div class="decant-detail-content">
                   <div class="decant-detail-image">
                     <img src="${decant.image || "imgs/placeholder.jpg"}" alt="${
-                      decant.name
-                    }" onerror="this.src='imgs/placeholder.jpg';" />
+          decant.name
+        }" onerror="this.src='imgs/placeholder.jpg';" />
                   </div>
                   <div class="decant-detail-info">
                     <h4>${decant.name}</h4>
-                    <p class="decant-description">${decant.description || "Sin descripción"}</p>
+                    <p class="decant-description">${
+                      decant.description || "Sin descripción"
+                    }</p>
                     <div class="decant-notes">
                       <span class="decant-notes-title">Notas:</span>
                       <div class="decant-notes-list">
                         ${
                           notes.length > 0
                             ? notes
-                                .map((note) => `<span class="decant-note">${note}</span>`)
+                                .map(
+                                  (note) =>
+                                    `<span class="decant-note">${note}</span>`
+                                )
                                 .join("")
-                            : "<span class=\"decant-note\">Sin información</span>"
+                            : '<span class="decant-note">Sin información</span>'
                         }
                       </div>
                     </div>

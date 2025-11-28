@@ -18,13 +18,24 @@ export class ProductService {
     const cachedVersion = window.cachedProductsVersion;
 
     try {
-      const response = await fetch(
-        `${this.apiConfig.google.SheetsUrl}?t=${Date.now()}`
-      );
+      const url = new URL(this.apiConfig.google.SheetsUrl);
+      url.searchParams.set("t", Date.now());
+
+      const sheetName = this.apiConfig.google.sheets?.perfumes;
+      if (sheetName) {
+        url.searchParams.set("sheet", sheetName);
+      }
+
+      const response = await fetch(url.toString());
       const data = await response.json();
 
       const newVersion = data.version;
-      const products = data.products;
+            const products = Array.isArray(data.products)
+        ? data.products
+        : Array.isArray(data.decants)
+        ? data.decants
+        : [];
+
 
       if (this.cachedProducts && cachedVersion === newVersion) {
         return this.cachedProducts;

@@ -75,5 +75,9 @@ export const apiConfig = {
   google: {
     SheetsUrl:
       "https://script.google.com/macros/s/AKfycbz8bKKFWehv7cnLIjAHF4zsfAOcxUsi54x6HilPFevpCofdCBUSyXe6nYSUcMFIXXeCYQ/exec",
+    sheets: {
+      perfumes: "CatalogParfum",
+      decants: "CatalogDecant",
+    },
   },
 };
