@@ -11,21 +11,9 @@ export class DecantService {
 
   async fetchDecants() {
     try {
-      const url = new URL(this.apiConfig.google.SheetsUrl);
-      url.searchParams.set("t", Date.now());
-
       const sheetName = this.apiConfig.google.sheets?.decants;
-      if (sheetName) {
-        url.searchParams.set("sheet", sheetName);
-      }
-
-      const response = await fetch(url.toString());
-      const data = await response.json();
-      const decants = Array.isArray(data.decants)
-        ? data.decants
-        : Array.isArray(data.products)
-        ? data.products
-        : [];
+      const data = await this.fetchSheetData(sheetName);
+      const decants = this.pickCollection(data, sheetName);
 
       if (this.cachedDecants && this.cachedVersion === data.version) {
         return this.cachedDecants;
@@ -47,5 +35,53 @@ export class DecantService {
       console.error("Error al obtener decants desde Google Sheets:", error);
       return [];
     }
+  }
+
+  pickCollection(data, sheetName) {
+    if (!data || typeof data !== "object") return [];
+
+    const candidateKeys = ["decants", "products", sheetName, "items"].filter(
+      Boolean
+    );
+
+    for (const key of candidateKeys) {
+      if (Array.isArray(data[key])) return data[key];
+    }
+
+    return [];
+  }
+
+  async fetchSheetData(sheetName) {
+    const baseUrl = new URL(this.apiConfig.google.SheetsUrl);
+    baseUrl.searchParams.set("t", Date.now());
+
+    const attempts = [
+      { param: "sheet", value: sheetName },
+      { param: "sheetName", value: sheetName },
+      { param: null, value: null },
+    ];
+
+    for (const attempt of attempts) {
+      try {
+        const url = new URL(baseUrl);
+        if (attempt.param && attempt.value) {
+          url.searchParams.set(attempt.param, attempt.value);
+        }
+
+        const response = await fetch(url.toString());
+        if (!response.ok) continue;
+
+        const data = await response.json();
+        const collection = this.pickCollection(data, sheetName);
+
+        if (collection.length > 0) {
+          return data;
+        }
+      } catch (error) {
+        console.error("Error al obtener datos de Google Sheets:", error);
+      }
+    }
+
+    return {};
   }
 }

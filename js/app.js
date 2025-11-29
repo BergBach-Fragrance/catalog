@@ -55,17 +55,15 @@ async function loadProducts() {
     // Filtrar productos con stock > 0
     //const availableProducts = products.filter(product => product.stock > 0);
 
-    const availableProducts = [...products];
-
-    // 👇 aplicamos el mismo criterio de orden que en filtros
-    const sortedProducts = availableProducts.sort(
+    // 🔹 Clonar y ordenar por "relevance" (stock primero, sin stock al final)
+    const sortedProducts = [...products].sort(
       productService.sortProducts("relevance")
     );
 
     displayedProducts = [];
 
-    // Renderizar los productos disponibles
-    renderProducts(availableProducts);
+    // Renderizar los productos ordenados
+    renderProducts(sortedProducts);
   } catch (error) {
     console.error("Error al cargar los productos:", error);
     showErrorPage();
@@ -154,7 +152,7 @@ async function loadDecants() {
   try {
     LoaderService.showLoader();
     const decants = await decantService.fetchDecants();
-    renderDecants(decants);
+    await renderDecants(decants);
     decantsLoaded = true;
   } catch (error) {
     console.error("Error al cargar los decants:", error);
@@ -164,11 +162,12 @@ async function loadDecants() {
   }
 }
 
-function renderDecants(decants) {
+async function renderDecants(decants) {
   const container = document.getElementById("decants-table-container");
   if (!container) return;
 
-  container.innerHTML = DecantTableComponent.render(decants);
+  const html = await DecantTableComponent.render(decants);
+  container.innerHTML = html;
   DecantTableComponent.initRowToggle();
 }
 

@@ -51,6 +51,7 @@ export const storeConfig = {
     },
   },
 
+  // Tabs configuration
   catalog: {
     tabs: {
       perfumes: "Perfumes",
@@ -74,7 +75,7 @@ export const storeConfig = {
 export const apiConfig = {
   google: {
     SheetsUrl:
-      "https://script.google.com/macros/s/AKfycbz8bKKFWehv7cnLIjAHF4zsfAOcxUsi54x6HilPFevpCofdCBUSyXe6nYSUcMFIXXeCYQ/exec",
+      "https://script.google.com/macros/s/AKfycbw_vEzkuspy0QOPaEyMBucCMaqU9FLzMgoRx7Gr4FtTmXl3S3uzSq0TJBt6H7_3nXyj/exec",
     sheets: {
       perfumes: "CatalogParfum",
       decants: "CatalogDecant",

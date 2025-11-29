@@ -1,18 +1,24 @@
 import { HelperService } from "../services/HelperService.js";
+import { ProductImageService } from "../services/ProductImageService.js";
 
 export class DecantTableComponent {
-  static render(decants) {
+  static async render(decants) {
     if (!decants || decants.length === 0) {
       return `
         <div class="decants-empty">No se encontraron decants disponibles en este momento.</div>
       `;
     }
 
-    const rows = decants
-      .map((decant) => {
+    const rows = await Promise.all(
+      decants.map(async (decant) => {
         const formattedPrice = HelperService.formatPrice(decant.price);
         const formattedVolume = decant.volume ? `${decant.volume} ml` : "-";
         const notes = Array.isArray(decant.notes) ? decant.notes : [];
+
+        // 🔹 Obtener imagen principal usando el mismo servicio que productos
+        const imageUrl = await ProductImageService.getMainProductImage(
+          decant.id
+        );
 
         return `
           <tbody class="decant-row" data-id="${decant.id}">
@@ -27,15 +33,17 @@ export class DecantTableComponent {
               <td colspan="5">
                 <div class="decant-detail-content">
                   <div class="decant-detail-image">
-                    <img src="${decant.image || "imgs/placeholder.jpg"}" alt="${
-          decant.name
-        }" onerror="this.src='imgs/placeholder.jpg';" />
+                    <img 
+                      src="${imageUrl}" 
+                      alt="${decant.name}" 
+                      onerror="this.src='imgs/placeholder.jpg';" 
+                    />
                   </div>
                   <div class="decant-detail-info">
                     <h4>${decant.name}</h4>
-                    <p class="decant-description">${
-                      decant.description || "Sin descripción"
-                    }</p>
+                    <p class="decant-description">
+                      ${decant.description || "Sin descripción"}
+                    </p>
                     <div class="decant-notes">
                       <span class="decant-notes-title">Notas:</span>
                       <div class="decant-notes-list">
@@ -58,7 +66,7 @@ export class DecantTableComponent {
           </tbody>
         `;
       })
-      .join("");
+    );
 
     return `
       <table class="decants-table">
@@ -71,7 +79,7 @@ export class DecantTableComponent {
             <th class="toggle"></th>
           </tr>
         </thead>
-        ${rows}
+        ${rows.join("")}
       </table>
     `;
   }
