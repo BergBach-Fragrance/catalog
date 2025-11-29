@@ -86,7 +86,7 @@ async function renderProducts(products, reset = true) {
   for (const product of products) {
     // Evitar productos duplicados
     if (!displayedProducts.some((p) => p.id === product.id)) {
-      const productCard = await ProductCardComponent.render(product);
+      const productCard = ProductCardComponent.render(product);
       container.innerHTML += productCard;
       // Agregar el producto a los productos mostrados
       displayedProducts.push(product);

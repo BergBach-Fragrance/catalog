@@ -1,6 +1,11 @@
 export class ProductImageService {
   static placeholderPath = "./imgs/placeholder.jpg";
 
+  // Devuelve la ruta de la imagen principal sin esperar carga; el onerror en el <img> maneja el fallback
+  static getMainImagePath(productId) {
+    return `./products/images/${productId}/${productId}-image-0-main.jpg`;
+  }
+
   // Retorna una promesa con la imagen principal si existe, o el placeholder
   static getMainProductImage(productId) {
     const mainImagePath = `./products/images/${productId}/${productId}-image-0-main.jpg`;

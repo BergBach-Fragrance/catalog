@@ -2,8 +2,10 @@ import { ProductImageService } from "../services/ProductImageService.js";
 import { HelperService } from "../services/HelperService.js";
 
 export class ProductCardComponent {
-  static async render(product) {
-    const imageUrl = await ProductImageService.getMainProductImage(product.id);
+  static render(product) {
+    const imageUrl =
+      ProductImageService.getMainImagePath(product.id) ||
+      ProductImageService.placeholderPath;
     const formattedPrice = HelperService.formatPrice(product.price);
 
     const isOutOfStock = !product.stock || product.stock <= 0;
@@ -15,7 +17,7 @@ export class ProductCardComponent {
             <div class="product-image">
                 <img src="${imageUrl}" alt="${
       product.name
-    }" onerror="this.src='imgs/placeholder.jpg';">
+    }" loading="lazy" decoding="async" onerror="this.src='imgs/placeholder.jpg';">
                 
                 <div class="product-badge gender-badge">
                     ${product.gender}
