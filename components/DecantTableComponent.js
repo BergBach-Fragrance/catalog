@@ -9,13 +9,14 @@ export class DecantTableComponent {
       `;
     }
 
+    const standardVolume = decants[0]?.volume || decants[0]?.ml || "";
+
     const rows = await Promise.all(
       decants.map(async (decant) => {
         const formattedPrice = HelperService.formatPrice(decant.price);
-        const formattedVolume = decant.volume ? `${decant.volume} ml` : "-";
+        const formattedVolume = decant.volume ? `${decant.volume}` : "-";
         const notes = Array.isArray(decant.notes) ? decant.notes : [];
 
-        // 🔹 Obtener imagen principal usando el mismo servicio que productos
         const imageUrl = await ProductImageService.getMainProductImage(
           decant.id
         );
@@ -23,14 +24,12 @@ export class DecantTableComponent {
         return `
           <tbody class="decant-row" data-id="${decant.id}">
             <tr class="decant-row-summary">
-              <td class="decant-cell code">${decant.id || "-"}</td>
               <td class="decant-cell name">${decant.name}</td>
-              <td class="decant-cell volume">${formattedVolume}</td>
               <td class="decant-cell price">${formattedPrice}</td>
               <td class="decant-cell toggle"><i class="fas fa-chevron-down"></i></td>
             </tr>
             <tr class="decant-row-detail">
-              <td colspan="5">
+              <td colspan="3">
                 <div class="decant-detail-content">
                   <div class="decant-detail-image">
                     <img 
@@ -41,6 +40,11 @@ export class DecantTableComponent {
                   </div>
                   <div class="decant-detail-info">
                     <h4>${decant.name}</h4>
+                    ${
+                      formattedVolume && formattedVolume !== "-"
+                        ? `<p class="decant-volume">Volumen: ${formattedVolume}</p>`
+                        : ""
+                    }
                     <p class="decant-description">
                       ${decant.description || "Sin descripción"}
                     </p>
@@ -69,12 +73,15 @@ export class DecantTableComponent {
     );
 
     return `
+      ${
+        standardVolume
+          ? `<div class="decants-volume-note">Volumen estándar: ${standardVolume}</div>`
+          : ""
+      }
       <table class="decants-table">
         <thead>
           <tr>
-            <th class="code">Código</th>
             <th class="name">Perfume</th>
-            <th class="volume">Volumen</th>
             <th class="price">Precio</th>
             <th class="toggle"></th>
           </tr>

@@ -1,7 +1,7 @@
 import { HelperService } from "./HelperService.js";
 
 export class DecantService {
-  static DECANT_MARGIN = 0;
+  static DECANT_MARGIN = 2000;
 
   constructor(apiConfig) {
     this.apiConfig = apiConfig;
